@@ -1493,6 +1493,7 @@ int main(int /*argc*/, char* /*argv*/ [])
 				flash += l;
 			}
 			
+			color_map_fx->setFloat("time", beat);
 			color_map_fx->setFloat("flash", flash);
 			color_map_fx->setFloat("fade2", colorMapFadeTrack.getValue(beat));
 			color_map_fx->setFloat("alpha", 0.25f);

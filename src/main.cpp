@@ -299,6 +299,102 @@ std::vector<std::vector<Vector3> > loadSpheres(const char *path)
 	return ret;
 }
 
+class FenceProfiler
+{
+public:
+	FenceProfiler(Device &device) : device(device), usedRegions(0), disjointQuery(nullptr), frequencyQuery(nullptr)
+	{
+		core::d3dErr(device->CreateQuery(D3DQUERYTYPE_TIMESTAMPDISJOINT, &disjointQuery));
+		core::d3dErr(device->CreateQuery(D3DQUERYTYPE_TIMESTAMPFREQ, &frequencyQuery));
+	}
+
+	void StartFrame()
+	{
+		usedRegions = 0;
+		d3dErr(disjointQuery->Issue(D3DISSUE_BEGIN));
+		d3dErr(frequencyQuery->Issue(D3DISSUE_END));
+	}
+
+	void EndFrame()
+	{
+		d3dErr(disjointQuery->Issue(D3DISSUE_END));
+	}
+
+	int StartRegion(const char *name)
+	{
+		if (usedRegions == regionPool.size()) {
+			// grow pool
+			region r;
+			core::d3dErr(device->CreateQuery(D3DQUERYTYPE_TIMESTAMP, &r.startQuery));
+			core::d3dErr(device->CreateQuery(D3DQUERYTYPE_TIMESTAMP, &r.endQuery));
+			regionPool.push_back(r);
+		}
+
+		regionPool[usedRegions].name = name;
+		regionPool[usedRegions].ended = false;
+
+		// start start query
+		d3dErr(regionPool[usedRegions].startQuery->Issue(D3DISSUE_END));
+
+		return usedRegions++;
+	}
+
+	void EndRegion(int regionIndex)
+	{
+		if (regionPool[regionIndex].ended)
+			throw new FatalException("region already ended!");
+
+		d3dErr(regionPool[regionIndex].endQuery->Issue(D3DISSUE_END));
+		regionPool[regionIndex].ended = true;
+	}
+
+	void Report()
+	{
+		while (disjointQuery->GetData(nullptr, 0, D3DGETDATA_FLUSH) == S_FALSE ||
+			frequencyQuery->GetData(nullptr, 0, D3DGETDATA_FLUSH) == S_FALSE);
+
+		BOOL disjoint;
+		DWORD getDataFlags = 0; // D3DGETDATA_FLUSH;
+		if (disjointQuery->GetData(&disjoint, sizeof(BOOL), getDataFlags) == S_OK) {
+			if (!disjoint) {
+				UINT64 frequency;
+				d3dErr(frequencyQuery->GetData(&frequency, sizeof(UINT64), getDataFlags));
+				for (int i = 0; i < usedRegions; ++i) {
+					const region &r = regionPool[i];
+					if (!r.ended)
+						throw new FatalException("region not ended!");
+
+					while (r.startQuery->GetData(nullptr, 0, D3DGETDATA_FLUSH) == S_FALSE ||
+						r.endQuery->GetData(nullptr, 0, D3DGETDATA_FLUSH) == S_FALSE);
+
+					UINT64 startTimestamp = 0, endTimestamp = 0;
+					d3dErr(r.startQuery->GetData(&startTimestamp, sizeof(UINT64), getDataFlags));
+					d3dErr(r.endQuery->GetData(&endTimestamp, sizeof(UINT64), getDataFlags));
+
+					UINT64 diff = endTimestamp - startTimestamp;
+					double value = ((double)diff / frequency);
+					core::log::printf("%s: %f ms\n", r.name, value * 1000);
+				}
+			}
+		}
+	}
+
+private:
+	Device &device;
+	IDirect3DQuery9 *disjointQuery;
+	IDirect3DQuery9 *frequencyQuery;
+
+	struct region {
+		const char *name;
+		bool ended;
+		IDirect3DQuery9 *startQuery;
+		IDirect3DQuery9 *endQuery;
+	};
+
+	std::vector<region> regionPool;
+	int usedRegions;
+};
+
 extern "C" _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
 
 int main(int argc, char *argv[])
@@ -596,6 +692,8 @@ int main(int argc, char *argv[])
 		if (dump_video)
 			_mkdir("dump");
 
+		FenceProfiler fenceProfiler(device);
+
 		BASS_Start();
 		BASS_ChannelPlay(stream, false);
 
@@ -722,9 +820,13 @@ int main(int argc, char *argv[])
 			Matrix4x4 world = Matrix4x4::identity();
 			Matrix4x4 proj  = Matrix4x4::projection(80.0f, float(DEMO_ASPECT), zNear, zFar);
 
+			fenceProfiler.StartFrame();
+
 			// render
 			device->BeginScene();
 			device->SetRenderState(D3DRS_SRGBWRITEENABLE, FALSE);
+
+			int logoAnimUpdate = fenceProfiler.StartRegion("logo anim update");
 
 			device.setRenderTarget(logo_anim_target.getRenderTarget(), 0);
 			device.setRenderTarget(NULL, 1);
@@ -736,6 +838,7 @@ int main(int argc, char *argv[])
 			logo_anim_fx->setFloat("time", float(fmod((sync_get_val(planeTimeTrack, row) + 0.5) / 512, 1)));
 			logo_anim_fx->setFloat("fade", float(sync_get_val(planeFadeTrack, row)));
 			drawQuad(device, logo_anim_fx, -1, -1, 2, 2);
+			fenceProfiler.EndRegion(logoAnimUpdate);
 
 			device.setRenderTarget(color_target.getRenderTarget(), 0);
 			device.setDepthStencilSurface(depth_target.getRenderTarget());
@@ -745,7 +848,9 @@ int main(int argc, char *argv[])
 			device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
 			device->SetRenderState(D3DRS_ZWRITEENABLE, true);
 
+			int renderTargetClearRegion = fenceProfiler.StartRegion("rendertarget clear");
 			device->Clear(0, 0, D3DCLEAR_ZBUFFER | D3DCLEAR_TARGET, 0xFF000000, 1.f, 0);
+			fenceProfiler.EndRegion(renderTargetClearRegion);
 
 			int skybox = (int)sync_get_val(skyboxTextureTrack, row);
 			if (skybox >= 0 && skybox < (int)skyboxes.size()) {
@@ -760,6 +865,8 @@ int main(int argc, char *argv[])
 			device.setRenderTarget(gbuffer_target1.getRenderTarget(), 1);
 			// clear GBuffer
 			device->Clear(0, 0, D3DCLEAR_TARGET, 0xFF000000, 1.f, 0);
+
+			int fillGBufferRegion = fenceProfiler.StartRegion("fill gbuffer");
 
 			if (groundplane) {
 				Matrix4x4 world = Matrix4x4::translation(Vector3(0, float(sync_get_val(groundYTrack, row)), 0));
@@ -784,6 +891,8 @@ int main(int argc, char *argv[])
 					corridor_floor_fx->draw(corridor1_floor_x);
 				}
 			}
+
+			fenceProfiler.EndRegion(fillGBufferRegion);
 
 			if (sphereSphere || sphereColumn) {
 				sphere_fx->setMatrices(world, view, proj);
@@ -848,6 +957,7 @@ int main(int argc, char *argv[])
 					}
 				}
 
+				int sphereDrawRegion = fenceProfiler.StartRegion("sphere-draw");
 				particleStreamer.begin();
 				for (size_t i = 0; i < spheres.size(); ++i) {
 					particleStreamer.add(spheres[i].pos, spheres[i].size, spheres[i].color);
@@ -859,6 +969,7 @@ int main(int argc, char *argv[])
 				}
 				particleStreamer.end();
 				sphere_fx->drawPass(&particleStreamer, 0);
+				fenceProfiler.EndRegion(sphereDrawRegion);
 
 				device.setRenderTarget(NULL, 1);
 				device.setRenderTarget(gbuffer_target1.getRenderTarget(), 0);
@@ -867,6 +978,7 @@ int main(int argc, char *argv[])
 				sphere_fx->setTexture("gbuffer_tex0", gbuffer_target0);
 				sphere_fx->setTexture("gbuffer_tex1", gbuffer_target1);
 
+				int sphereAmbientRegion = fenceProfiler.StartRegion("sphere-ao");
 				particleStreamer.begin();
 				for (size_t i = 0; i < spheres.size(); ++i) {
 					particleStreamer.add(spheres[i].pos, spheres[i].size);
@@ -878,6 +990,7 @@ int main(int argc, char *argv[])
 				}
 				particleStreamer.end();
 				sphere_fx->drawPass(&particleStreamer, 1);
+				fenceProfiler.EndRegion(sphereAmbientRegion);
 			}
 
 			float size = float(sync_get_val(planeSizeTrack, row));
@@ -923,7 +1036,10 @@ int main(int argc, char *argv[])
 			lighting_fx->setTexture("gbuffer_tex1", gbuffer_target1);
 			lighting_fx->setVector2("nearFar", nearFar);
 			lighting_fx->p->SetMatrixArray("planeMatrices", planeMatrices, planeCount);
+
+			int lightingRegion = fenceProfiler.StartRegion("lighting");
 			drawQuad(device, lighting_fx, -1, -1, 2, 2);
+			fenceProfiler.EndRegion(lightingRegion);
 
 			if (dof) {
 				device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
@@ -1020,10 +1136,13 @@ int main(int argc, char *argv[])
 			device.setRenderTarget(NULL, 1);
 
 			/* downsample and blur */
+			int blurRegion = fenceProfiler.StartRegion("blur");
 			float stdDev = 16.0f / 3;
 			for (int i = 0; i < 7; ++i) {
 				// copy to next level
+				int blurCopyRegion = fenceProfiler.StartRegion("blur copy");
 				d3dErr(device->StretchRect(color1_hdr.getSurface(i), NULL, color1_hdr.getSurface(i + 1), NULL, D3DTEXF_LINEAR));
+				fenceProfiler.EndRegion(blurCopyRegion);
 
 				/* do the bloom */
 				device->SetDepthStencilSurface(NULL);
@@ -1078,17 +1197,24 @@ int main(int argc, char *argv[])
 					device.setRenderTarget(j ? color1_hdr.getSurface(i) : color2_hdr.getSurface(i), 0);
 					int w = color1_hdr.getSurface(i).getWidth();
 					int h = color1_hdr.getSurface(i).getHeight();
+					int blurEffectRegion = fenceProfiler.StartRegion("blur effect");
 					drawQuad(device, blur_fx, -1, -1, 2, 2);
+					fenceProfiler.EndRegion(blurEffectRegion);
 				}
 			}
+			fenceProfiler.EndRegion(blurRegion);
 
 			device.setRenderTarget(flare_tex.getSurface(0));
 			flare_fx->setTexture("bloom_tex", color1_hdr);
+			int flareRegion = fenceProfiler.StartRegion("flare");
 			drawQuad(device, flare_fx, -1, -1, 2, 2);
+			fenceProfiler.EndRegion(flareRegion);
 
 			/* letterbox */
 			device.setRenderTarget(backbuffer);
+			int clearBackbufferRegion = fenceProfiler.StartRegion("clear backbuffer");
 			device->Clear(0, 0, D3DCLEAR_TARGET, D3DXCOLOR(0, 0, 0, 0), 1.f, 0);
+			fenceProfiler.EndRegion(clearBackbufferRegion);
 			device.setViewport(&letterbox_viewport);
 
 			float flash = float(sync_get_val(colorMapFlashTrack, row));
@@ -1128,10 +1254,14 @@ int main(int argc, char *argv[])
 			postprocess_fx->setFloat("color_map_lerp", float(sync_get_val(colorMapColorFadeTrack, row)));
 
 			device->SetRenderState(D3DRS_SRGBWRITEENABLE, FALSE);
+			int postProcessRegion = fenceProfiler.StartRegion("postprocess");
 			drawQuad(device, postprocess_fx, -1, -1, 2, 2);
+			fenceProfiler.EndRegion(postProcessRegion);
 
 			device->SetRenderState(D3DRS_SRGBWRITEENABLE, FALSE);
 			device->EndScene(); /* WE DONE IS! */
+
+			fenceProfiler.EndFrame();
 
 			if (dump_video) {
 				char temp[256];
@@ -1187,6 +1317,8 @@ int main(int argc, char *argv[])
 			if (BASS_ChannelIsActive(stream) == BASS_ACTIVE_STOPPED)
 				done = true;
 #endif
+
+			fenceProfiler.Report();
 		}
 
 

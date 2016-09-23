@@ -203,28 +203,14 @@ float srgb_decode(float v)
 
 float4 pixel(VS_OUTPUT In, float2 vpos : VPOS) : COLOR
 {
-	float2 block = floor(vpos / 16);
-	float2 uv_noise = block / 64;
-	uv_noise += floor(dist_offset * uv_noise) / 64;
-
 	float haspect = viewport.x / viewport.y;
 	float r2 = dot(In.npos, In.npos);
 	float f = (1 + r2 * (2 * distCoeff * sqrt(r2))) / (1 + distCoeff * 4);
 	float2 pos = f * (In.uv - 0.5) + 0.5;
 
-	float2 pos2 = pos;
-
 	float dist = pow(2 * distance(In.uv, float2(0.5, 0.5)), 2);
 	const float sep = 0.03;
 	float2 end = (pos - 0.5) * (1 - dist * sep * 2) + 0.5;
-
-	// glitch some blocks and lines
-	if (tex2D(noise_samp, uv_noise).r < block_thresh ||
-	    tex2D(noise_samp, float2(uv_noise.y, 0)).r < line_thresh) {
-		float2 dist = (frac(uv_noise) - 0.5) * 0.3;
-		pos += dist * 0.1;
-		end += dist * 0.12;
-	}
 
 	int samples = clamp(int(length(viewport * (end - pos) / 2)), 3, 8);
 	float3 col = sample_spectrum(color_samp, pos, end, samples, 0);
@@ -237,25 +223,8 @@ float4 pixel(VS_OUTPUT In, float2 vpos : VPOS) : COLOR
 	col = color_correct(col);
 
 	// blend overlay
-	float4 o = tex2D(overlay_samp, lerp(pos2, pos, overlayGlitch));
+	float4 o = tex2D(overlay_samp, pos);
 	col = lerp(col, o.rgb, o.a * overlay_alpha);
-
-	// loose luma for some blocks
-	if (tex2D(noise_samp, -uv_noise).r < block_thresh)
-		col.rgb = col.ggg;
-
-	// discolor block lines
-	if (tex2D(noise_samp, float2(uv_noise.y, 0.0)).r * 2.75 < line_thresh)
-		col.rgb = float3(0, dot(col.rgb, float3(1, 1, 1)), 0);
-	if (tex2D(noise_samp, float2(0.5 - uv_noise.y, 0.0)).r * 3 < line_thresh)
-		col.rgb = float2(0, dot(col.rgb, float3(1, 1, 1))).yxy;
-
-	// interleave lines in some blocks
-	if (tex2D(noise_samp, float2(0.5 - uv_noise.x, uv_noise.y)).r * 1.5 < block_thresh ||
-	    tex2D(noise_samp, float2(0, uv_noise.y)).r * 2.5 < line_thresh)
-	{
-		col.rgb *= tex2Dlod(spectrum_samp2, float4(vpos.y / 3, 0, 0, 0)).rgb * 1.25;
-	}
 
 	// apply flashes
 	col = col * fade + flash;

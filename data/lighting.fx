@@ -3,12 +3,7 @@ const float4x4 matView : VIEW;
 const float4x4 matViewInverse : VIEWINVERSE;
 const float3 fogColor;
 const float fogDensity;
-#define MAX_PLANES 4
-const float4x4 planeMatrices[MAX_PLANES];
-const float3 planeVertices[4 * MAX_PLANES];
-const int planeCount;
 const float2 nearFar;
-const float planeOverbright;
 
 struct VS_OUTPUT {
 	float4 pos : POSITION;
@@ -65,15 +60,6 @@ sampler gbuffer_samp1 = sampler_state {
 	sRGBTexture = True;
 };
 
-float3 planeIntersect(float3 ro, float3 rd, const float4x4 planeMatrix)
-{
-	float3 p = planeMatrix[3].xyz - ro;
-	float3 q = cross(p, rd);
-	float u = dot(planeMatrix[1].xyz, q);
-	float v = dot(planeMatrix[0].xyz, q);
-	float t = dot(planeMatrix[2].xyz, p);
-	return float3(u, v, t) / dot(planeMatrix[2].xyz, rd);
-}
 
 float4 pixel(VS_OUTPUT In) : COLOR
 {
@@ -98,34 +84,12 @@ float4 pixel(VS_OUTPUT In) : COLOR
 	float3 rayDir = reflect(viewDir, eyeNormal);
 	float fres = pow(saturate(1 + dot(eyeNormal, viewDir.xyz) * 0.95), 0.25);
 
-	for (int i = 0; i < planeCount; ++i) {
-		float3 planeVertexDirs[5];
-		planeVertexDirs[0] = normalize(planeVertices[i * 3 + 0].xyz - eyePos);
-		planeVertexDirs[1] = normalize(planeVertices[i * 3 + 1].xyz - eyePos);
-		planeVertexDirs[2] = normalize(planeVertices[i * 3 + 2].xyz - eyePos);
-		planeVertexDirs[3] = normalize(planeVertices[i * 3 + 3].xyz - eyePos);
-		planeVertexDirs[4] = planeVertexDirs[0];
-
-		float3 lv = float3(0, 0, 0);
-		for (int j = 0; j < 4; ++j) {
-			float3 v0 = planeVertexDirs[j];
-			float3 v1 = planeVertexDirs[j + 1];
-
-			float a = acos(dot(v0, v1));
-			float3 b = normalize(cross(v0, v1));
-			lv += a * b;
-		}
-
-		float tmp = dot(lv, eyeNormal);
-		if (tmp > 0) {
-			float factor = tmp / (2 * 3.14159265);
-			col += albedo * factor;
-		}
-
-		float3 hit = planeIntersect(rayOrigin, rayDir, planeMatrices[i]);
-		if (hit.z > 0)
-			col += spec * fres;
+	if (eyeNormal.z > 0) {
+		float factor = eyeNormal.z / (2 * 3.14159265);
+		col += albedo * factor;
 	}
+
+	col += spec * fres;
 
 	col.rgb = lerp(fogColor, col.rgb, exp(-eyeDepth * fogDensity));
 

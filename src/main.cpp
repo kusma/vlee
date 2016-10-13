@@ -859,38 +859,6 @@ int main(int argc, char *argv[])
 				sphere_fx->drawPass(&particleStreamer, 1);
 			}
 
-			float size = float(sync_get_val(planeSizeTrack, row));
-			float plane_distance = float(sync_get_val(planeMoveTrack, row));
-			float plane_rot = float(sync_get_val(planeRotTrack, row));
-			int planeCount = int(sync_get_val(planeCountTrack, row));
-			const int MAX_PLANES = 4;
-			planeCount = math::clamp(planeCount, int(0), MAX_PLANES);
-			Vector3 planeOffset(float(sync_get_val(planeOffsXTrack, row)),
-			                    float(sync_get_val(planeOffsYTrack, row)),
-			                    float(sync_get_val(planeOffsZTrack, row)));
-			Vector3 planeOrigin = -(planeOffset * float(planeCount - 1)) / 2;
-
-			Matrix4x4 planeRotation = Matrix4x4::rotation(Vector3(0, 0, plane_rot * float(M_PI / 180)));
-
-			Matrix4x4 planeMatrices[MAX_PLANES];
-			D3DXVECTOR4 planeVertices[MAX_PLANES * 4];
-			for (int i = 0; i < planeCount; ++i) {
-				Matrix4x4 planeTranslation = Matrix4x4::translation(planeOrigin + planeOffset * float(i));
-				Matrix4x4 planeTransform = (planeRotation * planeTranslation) * view;
-				Vector3 v0 = mul(planeTransform, Vector3(-size, -size, plane_distance));
-				Vector3 v1 = mul(planeTransform, Vector3( size, -size, plane_distance));
-				Vector3 v2 = mul(planeTransform, Vector3(-size,  size, plane_distance));
-				Vector3 v3 = mul(planeTransform, Vector3( size,  size, plane_distance));
-
-				planeMatrices[i] = calcPlaneMatrix(v0, v1, v2);
-				planeVertices[i * 4 + 0] = D3DXVECTOR4(v1.x, v1.y, v1.z, 1);
-				planeVertices[i * 4 + 1] = D3DXVECTOR4(v3.x, v3.y, v3.z, 1);
-				planeVertices[i * 4 + 2] = D3DXVECTOR4(v2.x, v2.y, v2.z, 1);
-				planeVertices[i * 4 + 3] = D3DXVECTOR4(v0.x, v0.y, v0.z, 1);
-			}
-			lighting_fx->p->SetInt("planeCount", planeCount);
-			lighting_fx->p->SetVectorArray("planeVertices", planeVertices, 4 * planeCount);
-			lighting_fx->setFloat("planeOverbright", float(sync_get_val(planeOverbrightTrack, row)));
 			lighting_fx->setVector3("fogColor", fogColor);
 			lighting_fx->setFloat("fogDensity", 0.01f);
 
@@ -901,7 +869,6 @@ int main(int argc, char *argv[])
 			lighting_fx->setTexture("gbuffer_tex0", gbuffer_target0);
 			lighting_fx->setTexture("gbuffer_tex1", gbuffer_target1);
 			lighting_fx->setVector2("nearFar", nearFar);
-			lighting_fx->p->SetMatrixArray("planeMatrices", planeMatrices, planeCount);
 			drawQuad(device, lighting_fx, -1, -1, 2, 2);
 
 			if (dof) {
@@ -947,15 +914,6 @@ int main(int argc, char *argv[])
 			}
 
 			device.setDepthStencilSurface(depth_target.getRenderTarget());
-
-			if (reflectionPlane) {
-				for (int i = 0; i < planeCount; ++i) {
-					Matrix4x4 world = planeRotation * Matrix4x4::translation(planeOrigin + planeOffset * float(i) + Vector3(0, 0, plane_distance));
-					plane_fx->setMatrices(world, view, proj);
-//					plane_fx->setTexture("albedo_tex", logo_anim_target);
-					drawQuad(device, plane_fx, -size, -size, size * 2, size * 2);
-				}
-			}
 
 			if (dustParticleCount > 0) {
 				Matrix4x4 modelview = world * view;

@@ -65,17 +65,6 @@ sampler gbuffer_samp1 = sampler_state {
 	sRGBTexture = True;
 };
 
-texture logo_tex;
-sampler logo_samp = sampler_state {
-	Texture = (logo_tex);
-	MipFilter = LINEAR;
-	MinFilter = LINEAR;
-	MagFilter = LINEAR;
-	AddressU = BORDER;
-	AddressV = BORDER;
-	sRGBTexture = FALSE;
-};
-
 float3 planeIntersect(float3 ro, float3 rd, const float4x4 planeMatrix)
 {
 	float3 p = planeMatrix[3].xyz - ro;
@@ -111,8 +100,6 @@ float4 pixel(VS_OUTPUT In) : COLOR
 
 	for (int i = 0; i < planeCount; ++i) {
 		float3 planeVertexDirs[5];
-//		for (int j = 0; j < 4; ++j)
-//			planeVertexDirs[i] = normalize(planeVertices[i * 3 + j].xyz - eyePos);
 		planeVertexDirs[0] = normalize(planeVertices[i * 3 + 0].xyz - eyePos);
 		planeVertexDirs[1] = normalize(planeVertices[i * 3 + 1].xyz - eyePos);
 		planeVertexDirs[2] = normalize(planeVertices[i * 3 + 2].xyz - eyePos);
@@ -129,24 +116,15 @@ float4 pixel(VS_OUTPUT In) : COLOR
 			lv += a * b;
 		}
 
-#if 0
-		// two-sided lighting
-		if (dot(planeMatrices[i][2].xyz, eyePos) < dot(planeMatrices[i][2].xyz, planeMatrices[i][3].xyz))
-			lv = -lv;
-#endif
-
 		float tmp = dot(lv, eyeNormal);
 		if (tmp > 0) {
 			float factor = tmp / (2 * 3.14159265);
-			float3 logo_color = tex2Dlod(logo_samp, float4(0.5, 0.5, 0, 999)).rgb * planeOverbright;
-			col += albedo * logo_color * factor;
+			col += albedo * factor;
 		}
 
 		float3 hit = planeIntersect(rayOrigin, rayDir, planeMatrices[i]);
-		if (hit.z > 0) {
-			float3 refl = tex2Dlod(logo_samp, float4(hit.xy, 0, 0)).rgb;
-			col += refl * spec * fres;
-		}
+		if (hit.z > 0)
+			col += spec * fres;
 	}
 
 	col.rgb = lerp(fogColor, col.rgb, exp(-eyeDepth * fogDensity));

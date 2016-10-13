@@ -494,8 +494,6 @@ int main(int argc, char *argv[])
 		RenderTexture color2_hdr(device, letterbox_viewport.Width, letterbox_viewport.Height, 0, D3DFMT_A16B16G16R16F);
 		RenderTexture flare_tex(device, letterbox_viewport.Width / 4, letterbox_viewport.Height / 4, 1, D3DFMT_A16B16G16R16F);
 
-		RenderTexture logo_anim_target(device, 512, 512, 0, D3DFMT_A16B16G16R16F, D3DMULTISAMPLE_NONE, D3DUSAGE_RENDERTARGET | D3DUSAGE_AUTOGENMIPMAP);
-
 		RenderCubeTexture reflection_target(device, 512, 1, D3DFMT_A16B16G16R16F);
 		Surface reflection_depthstencil = device.createDepthStencilSurface(512, 512, D3DFMT_D24S8);
 
@@ -564,7 +562,6 @@ int main(int argc, char *argv[])
 		Texture corridor1_ao_tex = engine::loadTexture(device, "data/corridor1_ao.png");
 
 		Effect *lighting_fx = engine::loadEffect(device, "data/lighting.fx");
-		lighting_fx->setTexture("logo_tex", logo_anim_target);
 
 		Effect *sphere_fx = engine::loadEffect(device, "data/sphere.fx");
 		Texture kulefarger_tex = engine::loadTexture(device, "data/kulefarger.png");
@@ -582,11 +579,6 @@ int main(int argc, char *argv[])
 		groundplane_fx->setTexture("albedo_tex", ground_albedo_tex);
 		groundplane_fx->setTexture("normal_tex", ground_normal_tex);
 		groundplane_fx->setTexture("specular_tex", ground_specular_tex);
-
-		Effect *logo_anim_fx = engine::loadEffect(device, "data/logo-anim.fx");
-		Anim shapes = engine::loadAnim(device, "data/shapes");
-		Anim strokes = engine::loadAnim(device, "data/strokes");
-		Anim greetings = engine::loadAnim(device, "data/greetings");
 
 		bool dump_video = false;
 		for (int i = 1; i < argc; ++i)
@@ -725,17 +717,6 @@ int main(int argc, char *argv[])
 			// render
 			device->BeginScene();
 			device->SetRenderState(D3DRS_SRGBWRITEENABLE, FALSE);
-
-			device.setRenderTarget(logo_anim_target.getRenderTarget(), 0);
-			device.setRenderTarget(NULL, 1);
-			device->Clear(0, 0, D3DCLEAR_ZBUFFER | D3DCLEAR_TARGET, 0xFF000000, 1.f, 0);
-
-			logo_anim_fx->setTexture("shape_tex", shapes.getTexture(int(sync_get_val(planeShapeTrack, row)) % shapes.getTextureCount()));
-			logo_anim_fx->setTexture("stroke_tex", strokes.getTexture(int(sync_get_val(planeStrokeTrack, row)) % strokes.getTextureCount()));
-			logo_anim_fx->setTexture("greetings_tex", greetings.getTexture(int(sync_get_val(planeGreetingsTrack, row)) % greetings.getTextureCount()));
-			logo_anim_fx->setFloat("time", float(fmod((sync_get_val(planeTimeTrack, row) + 0.5) / 512, 1)));
-			logo_anim_fx->setFloat("fade", float(sync_get_val(planeFadeTrack, row)));
-			drawQuad(device, logo_anim_fx, -1, -1, 2, 2);
 
 			device.setRenderTarget(color_target.getRenderTarget(), 0);
 			device.setDepthStencilSurface(depth_target.getRenderTarget());
@@ -973,7 +954,7 @@ int main(int argc, char *argv[])
 				for (int i = 0; i < planeCount; ++i) {
 					Matrix4x4 world = planeRotation * Matrix4x4::translation(planeOrigin + planeOffset * float(i) + Vector3(0, 0, plane_distance));
 					plane_fx->setMatrices(world, view, proj);
-					plane_fx->setTexture("albedo_tex", logo_anim_target);
+//					plane_fx->setTexture("albedo_tex", logo_anim_target);
 					drawQuad(device, plane_fx, -size, -size, size * 2, size * 2);
 				}
 			}
@@ -1167,11 +1148,6 @@ int main(int argc, char *argv[])
 					case 'O':
 						log::printf("reloading overlays");
 						overlays = engine::loadAnim(device, "data/overlays");
-						break;
-
-					case 'P':
-						shapes = engine::loadAnim(device, "data/shapes");
-						strokes = engine::loadAnim(device, "data/strokes");
 						break;
 					}
 				}

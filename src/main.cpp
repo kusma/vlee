@@ -535,8 +535,6 @@ int main(int argc, char *argv[])
 
 		Anim overlays = engine::loadAnim(device, "data/overlays");
 
-		Effect *mesh_fx = engine::loadEffect(device, "data/mesh.fx");
-
 		Texture con_diffuse_tex = engine::loadTexture(device, "data/Con_Diffuse_1.jpg");
 		Texture con_normal_tex = engine::loadTexture(device, "data/Con_Normal_1.jpg");
 		Texture con_specular_tex = engine::loadTexture(device, "data/Con_Specular_1.png");

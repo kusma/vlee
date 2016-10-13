@@ -62,6 +62,6 @@ technique white {
 		ZWriteEnable = False;
 		ZEnable = True;
 		SrcBlend = SrcAlpha;
-		DestBlend = One;
+		DestBlend = InvSrcAlpha;
 	}
 }

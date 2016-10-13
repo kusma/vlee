@@ -18,4 +18,4 @@
 #endif
 
 #define DEMO_ASPECT (16.0 / 9)
-#define BPM 186.0
+#define BPM 167.0

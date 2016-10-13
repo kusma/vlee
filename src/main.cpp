@@ -409,63 +409,46 @@ int main(int argc, char *argv[])
 
 		const sync_track *partTrack = sync_get_track(rocket, "part");
 
-		const sync_track *cameraDistanceTrack   = sync_get_track(rocket, "cam.dist");
-		const sync_track *cameraTimeTrack       = sync_get_track(rocket, "cam.time");
-		const sync_track *cameraXTrack          = sync_get_track(rocket, "cam.x");
-		const sync_track *cameraYTrack          = sync_get_track(rocket, "cam.y");
-		const sync_track *cameraZTrack          = sync_get_track(rocket, "cam.z");
-		const sync_track *cameraAtXTrack        = sync_get_track(rocket, "cam.at.x");
-		const sync_track *cameraAtYTrack        = sync_get_track(rocket, "cam.at.y");
-		const sync_track *cameraAtZTrack        = sync_get_track(rocket, "cam.at.z");
-		const sync_track *cameraRollTrack       = sync_get_track(rocket, "cam.roll");
-		const sync_track *cameraOffsetTrack     = sync_get_track(rocket, "cam.offset");
-		const sync_track *cameraIndexTrack      = sync_get_track(rocket, "cam.index");
-		const sync_track *cameraShakeAmtTrack   = sync_get_track(rocket, "cam.shake.amt");
-		const sync_track *cameraShakeSpeedTrack = sync_get_track(rocket, "cam.shake.speed");
-
-		const sync_track *planeMoveTrack = sync_get_track(rocket, "plane.move");
-		const sync_track *planeSizeTrack = sync_get_track(rocket, "plane.size");
-		const sync_track *planeRotTrack = sync_get_track(rocket, "plane.rot");
-		const sync_track *planeShapeTrack = sync_get_track(rocket, "plane.shape");
-		const sync_track *planeStrokeTrack = sync_get_track(rocket, "plane.stroke");
-		const sync_track *planeGreetingsTrack = sync_get_track(rocket, "plane.greet");
-		const sync_track *planeTimeTrack = sync_get_track(rocket, "plane.time");
-		const sync_track *planeFadeTrack = sync_get_track(rocket, "plane.fade");
-		const sync_track *planeOverbrightTrack = sync_get_track(rocket, "plane.overbright");
-		const sync_track *planeCountTrack = sync_get_track(rocket, "plane.count");
-		const sync_track *planeOffsXTrack = sync_get_track(rocket, "plane.offs.x");
-		const sync_track *planeOffsYTrack = sync_get_track(rocket, "plane.offs.y");
-		const sync_track *planeOffsZTrack = sync_get_track(rocket, "plane.offs.z");
+		const sync_track *cameraIndexTrack      = sync_get_track(rocket, "camera:index");
+		const sync_track *cameraDistanceTrack   = sync_get_track(rocket, "camera:dist");
+		const sync_track *cameraTimeTrack       = sync_get_track(rocket, "camera:time");
+		const sync_track *cameraXTrack          = sync_get_track(rocket, "camera:pos.x");
+		const sync_track *cameraYTrack          = sync_get_track(rocket, "camera:pos.y");
+		const sync_track *cameraZTrack          = sync_get_track(rocket, "camera:pos.z");
+		const sync_track *cameraAtXTrack        = sync_get_track(rocket, "camera:target.x");
+		const sync_track *cameraAtYTrack        = sync_get_track(rocket, "camera:target.y");
+		const sync_track *cameraAtZTrack        = sync_get_track(rocket, "camera:target.z");
+		const sync_track *cameraRollTrack       = sync_get_track(rocket, "camera:roll");
+		const sync_track *cameraOffsetTrack     = sync_get_track(rocket, "camera:offset");
+		const sync_track *cameraShakeAmtTrack   = sync_get_track(rocket, "camera:shake.amt");
+		const sync_track *cameraShakeSpeedTrack = sync_get_track(rocket, "camera:shake.speed");
 
 
-		const sync_track *colorMapFadeTrack    = sync_get_track(rocket, "cm.fade");
-		const sync_track *colorMapFlashTrack   = sync_get_track(rocket, "cm.flash");
-		const sync_track *colorMapOverlayTrack = sync_get_track(rocket, "cm.overlay");
-		const sync_track *colorMapColormap1Track = sync_get_track(rocket, "cm.colormap1");
-		const sync_track *colorMapColormap2Track = sync_get_track(rocket, "cm.colormap2");
-		const sync_track *colorMapColorFadeTrack = sync_get_track(rocket, "cm.colorfade");
-		const sync_track *colorMapOverlayAlphaTrack = sync_get_track(rocket, "cm.overlay_alpha");
-		const sync_track *pulseAmt2Track       = sync_get_track(rocket, "cm.pulse.amt");
-		const sync_track *pulseSpeed2Track     = sync_get_track(rocket, "cm.pulse.speed");
-		const sync_track *lensDistTrack     = sync_get_track(rocket, "cm.lensdist");
+		const sync_track *colorMapFadeTrack  = sync_get_track(rocket, "postproc:fade");
+		const sync_track *colorMapFlashTrack = sync_get_track(rocket, "postproc:flash");
 
-		const sync_track *bloomCutoffTrack = sync_get_track(rocket, "bloom.cutoff");
-		const sync_track *bloomShapeTrack  = sync_get_track(rocket, "bloom.shape");
-		const sync_track *bloomAmtTrack    = sync_get_track(rocket, "bloom.amt");
+		const sync_track *colorMapOverlayTrack      = sync_get_track(rocket, "postproc:overlay.index");
+		const sync_track *colorMapOverlayAlphaTrack = sync_get_track(rocket, "postproc:overlay.fade");
 
-		const sync_track *glitchBlockThreshTrack = sync_get_track(rocket, "glitch.blocks");
-		const sync_track *glitchLineThreshTrack = sync_get_track(rocket, "glitch.lines");
-		const sync_track *glitchOverlayTrack = sync_get_track(rocket, "glitch.overlay");
+		const sync_track *colorMapColormap1Track = sync_get_track(rocket, "postproc:colormap1");
+		const sync_track *colorMapColormap2Track = sync_get_track(rocket, "postproc:colormap2");
+		const sync_track *colorMapColorFadeTrack = sync_get_track(rocket, "postproc:colorfade");
 
-		const sync_track *flareAmountTrack = sync_get_track(rocket, "flare.amount");
+		const sync_track *pulseAmt2Track   = sync_get_track(rocket, "postproc:pulse.amt");
+		const sync_track *pulseSpeed2Track = sync_get_track(rocket, "postproc:pulse.speed");
+		const sync_track *lensDistTrack    = sync_get_track(rocket, "postproc:lensdist");
 
-		const sync_track *skyboxDesaturateTrack = sync_get_track(rocket, "skybox.desat");
-		const sync_track *skyboxTextureTrack = sync_get_track(rocket, "skybox.tex");
+		const sync_track *bloomCutoffTrack = sync_get_track(rocket, "postproc:bloom.cutoff");
+		const sync_track *bloomShapeTrack  = sync_get_track(rocket, "postproc:bloom.shape");
+		const sync_track *bloomAmtTrack    = sync_get_track(rocket, "postproc:bloom.amount");
 
-		const sync_track *dofCocScaleTrack = sync_get_track(rocket, "dof.scale");
-		const sync_track *dofFocalDistTrack = sync_get_track(rocket, "dof.fdist");
+		const sync_track *flareAmountTrack = sync_get_track(rocket, "postproc:flare.amount");
 
-		const sync_track *groundYTrack = sync_get_track(rocket, "ground.y");
+		const sync_track *skyboxDesaturateTrack = sync_get_track(rocket, "skybox:desat");
+		const sync_track *skyboxTextureTrack    = sync_get_track(rocket, "skybox:tex");
+
+		const sync_track *dofCocScaleTrack  = sync_get_track(rocket, "postproc:dof.scale");
+		const sync_track *dofFocalDistTrack = sync_get_track(rocket, "postproc:dof.fdist");
 
 		const sync_track *spheresAnimTrack = sync_get_track(rocket, "spheres.anim");
 		const sync_track *spheresDistTrack = sync_get_track(rocket, "spheres.dist");
@@ -609,6 +592,44 @@ int main(int argc, char *argv[])
 #endif
 			double beat = row / 4;
 
+			bool bartikkel = false;
+			bool dof = true;
+			bool reflectionPlane = false;
+			bool groundplane = false;
+			bool corridor = false;
+			bool sphereSphere = false;
+			bool sphereColumn = false;
+			int dustParticleCount = 0;
+			Vector3 fogColor(0, 0, 0);
+
+			int part = int(sync_get_val(partTrack, row));
+			switch (part) {
+			case 0:
+				fogColor = Vector3(1, 1, 1);
+				bartikkel = true;
+				sphereSphere = true;
+				dustParticleCount = 10000;
+				break;
+
+			case 1:
+				corridor = true;
+				fogColor = Vector3(0.01, 0.01, 0.01);
+				reflectionPlane = true;
+				break;
+
+			case 2:
+				sphereSphere = true;
+				reflectionPlane = true;
+				break;
+
+			case 3:
+				corridor = true;
+				fogColor = Vector3(0.01, 0.01, 0.01);
+				sphereColumn = true;
+				reflectionPlane = true;
+				break;
+			}
+
 			double camTime = sync_get_val(cameraTimeTrack, row);
 			double camOffset = sync_get_val(cameraOffsetTrack, row);
 			Vector3 camPos, camTarget, camUp = Vector3(0, 1, 0);
@@ -659,41 +680,6 @@ int main(int argc, char *argv[])
 			particle_fx->setFloat("focal_distance", focal_distance);
 			particle_fx->setFloat("coc_scale", coc_scale);
 
-			bool dof = true;
-			bool reflectionPlane = false;
-			bool groundplane = false;
-			bool corridor = false;
-			bool sphereSphere = false;
-			bool sphereColumn = false;
-			int dustParticleCount = 0;
-			Vector3 fogColor(0, 0, 0);
-
-			int part = int(sync_get_val(partTrack, row));
-			switch (part) {
-			case 0:
-				groundplane = true;
-				reflectionPlane = true;
-				break;
-
-			case 1:
-				corridor = true;
-				fogColor = Vector3(0.01, 0.01, 0.01);
-				reflectionPlane = true;
-				break;
-
-			case 2:
-				sphereSphere = true;
-				reflectionPlane = true;
-				break;
-
-			case 3:
-				corridor = true;
-				fogColor = Vector3(0.01, 0.01, 0.01);
-				sphereColumn = true;
-				reflectionPlane = true;
-				break;
-			}
-
 #ifdef SYNC_PLAYER
 			if (part < 0)
 				done = true;
@@ -739,13 +725,6 @@ int main(int argc, char *argv[])
 			device.setRenderTarget(gbuffer_target1.getRenderTarget(), 1);
 			// clear GBuffer
 			device->Clear(0, 0, D3DCLEAR_TARGET, 0xFF000000, 1.f, 0);
-
-			if (groundplane) {
-				Matrix4x4 world = Matrix4x4::translation(Vector3(0, float(sync_get_val(groundYTrack, row)), 0));
-
-				groundplane_fx->setMatrices(world, view, proj);
-				groundplane_fx->draw(groundplane_x);
-			}
 
 			if (corridor) {
 				for (int i = 0; i < 10; ++i) {
@@ -938,7 +917,7 @@ int main(int argc, char *argv[])
 							));
 					pos += offset * 3;
 					float size = math::notRandf(i * 3 + 1) * 2.5f;
-					particleStreamer.add(pos, size);
+					particleStreamer.add(pos, size, Vector3(0, 0, 0));
 					if (!particleStreamer.getRoom()) {
 						particleStreamer.end();
 						particle_fx->draw(&particleStreamer);
@@ -1041,12 +1020,9 @@ int main(int argc, char *argv[])
 			postprocess_fx->setTexture("overlay_tex", overlays.getTexture(int(sync_get_val(colorMapOverlayTrack, row)) % overlays.getTextureCount()));
 			postprocess_fx->setTexture("bloom_tex", color1_hdr);
 			postprocess_fx->setTexture("flare_tex", flare_tex);
-			postprocess_fx->setFloat("block_thresh", float(sync_get_val(glitchBlockThreshTrack, row)));
-			postprocess_fx->setFloat("line_thresh", float(sync_get_val(glitchLineThreshTrack, row)));
-			postprocess_fx->setFloat("overlayGlitch", float(sync_get_val(glitchOverlayTrack, row)));
 
 			postprocess_fx->setFloat("flare_amount", float(sync_get_val(flareAmountTrack, row)));
-			postprocess_fx->setFloat("distCoeff", float(sync_get_val(lensDistTrack, row)));
+			postprocess_fx->setFloat("distCoeff", float(pow(sync_get_val(lensDistTrack, row), 2)));
 
 			float bloom_shape = float(sync_get_val(bloomShapeTrack, row));
 			float bloom_weight[7];

@@ -1,16 +1,21 @@
-<sync rows="128">
+<sync rows="4096">
 	<tracks>
 		<track name="part">
 			<key interpolation="0" row="0" value="0"/>
 		</track>
 		<track name="spheres.anim"/>
-		<track name="spheres.dist"/>
-		<track name="spheres.pal"/>
+		<track name="spheres.dist">
+			<key interpolation="0" row="0" value="199999"/>
+		</track>
+		<track name="spheres.pal">
+			<key interpolation="0" row="0" value="5"/>
+		</track>
 		<track name="camera:index">
 			<key interpolation="0" row="0" value="0"/>
 		</track>
 		<track name="camera:dist">
-			<key interpolation="0" row="0" value="10"/>
+			<key interpolation="1" row="0" value="10"/>
+			<key interpolation="0" row="127" value="20"/>
 		</track>
 		<track name="camera:time"/>
 		<track name="camera:pos.x"/>
@@ -53,9 +58,17 @@
 		<track name="postproc:lensdist">
 			<key interpolation="0" row="0" value="0.1"/>
 		</track>
-		<track name="postproc:bloom.cutoff"/>
-		<track name="postproc:bloom.shape"/>
-		<track name="postproc:bloom.amount"/>
+		<track name="postproc:bloom.cutoff">
+			<key interpolation="1" row="0" value="0"/>
+			<key interpolation="0" row="32" value="1"/>
+		</track>
+		<track name="postproc:bloom.shape">
+			<key interpolation="0" row="0" value="0.1"/>
+		</track>
+		<track name="postproc:bloom.amount">
+			<key interpolation="1" row="0" value="300"/>
+			<key interpolation="0" row="32" value="100"/>
+		</track>
 		<track name="postproc:flare.amount"/>
 		<track name="postproc:dof.scale"/>
 		<track name="postproc:dof.fdist"/>

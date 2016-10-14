@@ -501,7 +501,6 @@ int main(int argc, char *argv[])
 		postprocess_fx->setTexture("lensdirt_tex", lensdirt_tex);
 		postprocess_fx->setTexture("vignette_tex", vignette_tex);
 
-
 		Texture noise_tex = engine::loadTexture(device, "data/noise.png");
 		postprocess_fx->setTexture("noise_tex", noise_tex);
 		postprocess_fx->setVector3("nscale", Vector3(letterbox_viewport.Width / 256.0f, letterbox_viewport.Height / 256.0f, 0.0f));
@@ -512,6 +511,10 @@ int main(int argc, char *argv[])
 
 		engine::ParticleStreamer particleStreamer(device);
 		Effect *particle_fx = engine::loadEffect(device, "data/particle.fx");
+
+		Effect *bartikkel_fx = engine::loadEffect(device, "data/bartikkel.fx");
+		Texture bartikkel_tex = engine::loadTexture(device, "data/bartikkel.png");
+		bartikkel_fx->setTexture("tex", bartikkel_tex);
 
 		Mesh *skybox_x = engine::loadMesh(device, "data/skybox.x");
 		Effect *skybox_fx = engine::loadEffect(device, "data/skybox.fx");
@@ -608,7 +611,6 @@ int main(int argc, char *argv[])
 				fogColor = Vector3(1, 1, 1);
 				bartikkel = true;
 				sphereSphere = true;
-				dustParticleCount = 10000;
 				break;
 
 			case 1:
@@ -838,8 +840,9 @@ int main(int argc, char *argv[])
 				sphere_fx->drawPass(&particleStreamer, 1);
 			}
 
+			float fogDensity = 0.0075f;
 			lighting_fx->setVector3("fogColor", fogColor);
-			lighting_fx->setFloat("fogDensity", 0.01f);
+			lighting_fx->setFloat("fogDensity", fogDensity);
 
 			device.setRenderTarget(color_target.getRenderTarget(), 0);
 			device.setRenderTarget(NULL, 1);
@@ -894,39 +897,70 @@ int main(int argc, char *argv[])
 
 			device.setDepthStencilSurface(depth_target.getRenderTarget());
 
-			if (dustParticleCount > 0) {
+			if (dustParticleCount > 0 || bartikkel) {
 				Matrix4x4 modelview = world * view;
 				Vector3 up(modelview._12, modelview._22, modelview._32);
 				Vector3 left(modelview._11, modelview._21, modelview._31);
-				math::normalize(up);
-				math::normalize(left);
-				particle_fx->setVector3("up", up);
-				particle_fx->setVector3("left", left);
-				particle_fx->setMatrices(world, view, proj);
-				particle_fx->setVector2("viewport", Vector2(letterbox_viewport.Width, letterbox_viewport.Height));
+				up = math::normalize(up);
+				left = math::normalize(left);
 
 				device.setRenderTarget(dof_target.getSurface(0), 0);
 
-				particleStreamer.begin();
-				for (int i = 0; i < dustParticleCount; ++i) {
-					Vector3 pos = Vector3(math::notRandf(i) * 2 - 1, math::notRandf(i + 1) * 2 - 1, math::notRandf(i + 2) * 2 - 1) * 30;
-					Vector3 offset = normalize(Vector3(
+				if (dustParticleCount > 0) {
+					particle_fx->setVector3("up", up);
+					particle_fx->setVector3("left", left);
+					particle_fx->setMatrices(world, view, proj);
+					particle_fx->setVector2("viewport", Vector2(letterbox_viewport.Width, letterbox_viewport.Height));
+
+					particleStreamer.begin();
+					for (int i = 0; i < dustParticleCount; ++i) {
+						Vector3 pos = Vector3(math::notRandf(i) * 2 - 1, math::notRandf(i + 1) * 2 - 1, math::notRandf(i + 2) * 2 - 1) * 30;
+						Vector3 offset = normalize(Vector3(
+								sin(i * 0.23 + beat * 0.0532),
+								cos(i * 0.27 + beat * 0.0521),
+								cos(i * 0.31 - beat * 0.0512)
+								));
+						pos += offset * 3;
+						float size = math::notRandf(i * 3 + 1) * 2.5f;
+						particleStreamer.add(pos, size, Vector3(0, 0, 0));
+						if (!particleStreamer.getRoom()) {
+							particleStreamer.end();
+							particle_fx->draw(&particleStreamer);
+							particleStreamer.begin();
+						}
+					}
+					particleStreamer.end();
+					particle_fx->draw(&particleStreamer);
+				}
+
+				if (bartikkel) {
+					bartikkel_fx->setVector3("up", up);
+					bartikkel_fx->setVector3("left", left);
+					bartikkel_fx->setMatrices(world, view, proj);
+					bartikkel_fx->setFloat("fogDensity", fogDensity);
+
+					particleStreamer.begin();
+					for (int i = 0; i < 50000; ++i) {
+						Vector3 pos = Vector3(math::notRandf(i) * 2 - 1, math::notRandf(i + 1) * 2 - 1, (i / 50000.0f) * 2 - 1) * 100;
+						Vector3 offset = normalize(Vector3(
 							sin(i * 0.23 + beat * 0.0532),
 							cos(i * 0.27 + beat * 0.0521),
 							cos(i * 0.31 - beat * 0.0512)
 							));
-					pos += offset * 3;
-					float size = math::notRandf(i * 3 + 1) * 2.5f;
-					particleStreamer.add(pos, size, Vector3(0, 0, 0));
-					if (!particleStreamer.getRoom()) {
-						particleStreamer.end();
-						particle_fx->draw(&particleStreamer);
-						particleStreamer.begin();
+						pos += offset * 3;
+						float size = 0.75f + math::notRandf(i * 3 + 1) * 0.5f;
+						particleStreamer.add(pos, size, Vector3(0, 0, 0));
+						if (!particleStreamer.getRoom()) {
+							particleStreamer.end();
+							bartikkel_fx->draw(&particleStreamer);
+							particleStreamer.begin();
+						}
 					}
+					particleStreamer.end();
+					bartikkel_fx->draw(&particleStreamer);
 				}
-				particleStreamer.end();
-				particle_fx->draw(&particleStreamer);
 			}
+
 
 			device.setRenderTarget(fxaa_target.getSurface(0), 0);
 			device.setRenderTarget(color1_hdr.getSurface(), 1);

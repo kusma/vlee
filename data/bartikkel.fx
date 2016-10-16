@@ -3,6 +3,8 @@ const float3 left;
 const float4x4 matView : VIEW;
 const float4x4 matWorldViewProjection : WORLDVIEWPROJECTION;
 const float fogDensity;
+const float focal_distance, coc_scale;
+const float2 viewport;
 
 texture tex;
 sampler tex_samp = sampler_state
@@ -11,9 +13,11 @@ sampler tex_samp = sampler_state
 	MipFilter = LINEAR;
 	MinFilter = LINEAR;
 	MagFilter = LINEAR;
+	sRGBTexture = True;
 
-	AddressU = CLAMP;
-	AddressV = CLAMP;
+	AddressU = BORDER;
+	AddressV = BORDER;
+	AddressW = CLAMP;
 };
 
 struct VS_INPUT {
@@ -26,9 +30,14 @@ struct VS_INPUT {
 struct VS_OUTPUT
 {
 	float4 pos : POSITION;
-	float2 tex : TEXCOORD0;
+	float3 tex : TEXCOORD0;
 	float  z : TEXCOORD1;
 };
+
+float coc(float z)
+{
+	return coc_scale * ((z - focal_distance) / z);
+}
 
 VS_OUTPUT vertex(VS_INPUT In)
 {
@@ -36,6 +45,7 @@ VS_OUTPUT vertex(VS_INPUT In)
 
 	float3 pos = In.pos;
 	float eyeDepth = mul(float4(pos, 1), matView).z;
+	float4 screenPos = mul(float4(pos, 1), matWorldViewProjection);
 
 	pos += In.size * (In.uv.x * left + In.uv.y * up);
 
@@ -43,15 +53,19 @@ VS_OUTPUT vertex(VS_INPUT In)
 
 	Out.z = clamp(exp(-eyeDepth * fogDensity), 0.0, 1.0);
 
-	Out.tex = float2(In.uv.x * 0.5, -In.uv.y * 0.5);
-	Out.tex += float2(0.5f, 0.5f);
+	float2 uv = float2(In.uv.x * 0.5, -In.uv.y * 0.5) + float2(0.5f, 0.5f);
+	float size = abs(coc(eyeDepth));
+	size += distance(screenPos.xy / screenPos.w, 0.0) * 0.0125;
+	size = clamp(size * viewport.y, 2, 150);
+	size *= viewport.y / 512;
+	size *= screenPos.w;
+	Out.tex = float3(uv, log2(size) / 7);
 	return Out;
 }
 
 float4 pixel(VS_OUTPUT In) : COLOR
 {
-	float4 col = tex2D(tex_samp, In.tex);
-	return float4(col.rgb, col.a * In.z);
+	return tex3Dlod(tex_samp, float4(In.tex, 0)) * In.z;
 }
 
 technique bartikkel {
@@ -61,7 +75,7 @@ technique bartikkel {
 		AlphaBlendEnable = True;
 		ZWriteEnable = False;
 		ZEnable = True;
-		SrcBlend = SrcAlpha;
+		SrcBlend = One;
 		DestBlend = InvSrcAlpha;
 	}
 }

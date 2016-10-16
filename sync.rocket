@@ -1,27 +1,33 @@
 <sync rows="4096">
 	<tracks>
 		<track name="part">
-			<key interpolation="0" row="0" value="0"/>
+			<key interpolation="0" value="0" row="0"/>
+			<key interpolation="0" value="1" row="19"/>
 		</track>
 		<track name="spheres.anim"/>
 		<track name="spheres.dist">
-			<key interpolation="0" row="0" value="199999"/>
+			<key interpolation="0" value="199999" row="0"/>
 		</track>
 		<track name="spheres.pal">
-			<key interpolation="0" row="0" value="5"/>
+			<key interpolation="0" value="5" row="0"/>
 		</track>
 		<track name="camera:index">
-			<key interpolation="0" row="0" value="0"/>
+			<key interpolation="0" value="0" row="0"/>
 		</track>
 		<track name="camera:dist">
-			<key interpolation="1" row="0" value="10"/>
-			<key interpolation="0" row="127" value="20"/>
+			<key interpolation="1" value="10" row="0"/>
+			<key interpolation="0" value="0" row="20"/>
+			<key interpolation="1" value="7" row="22"/>
+			<key interpolation="0" value="10" row="35"/>
+			<key interpolation="0" value="20" row="127"/>
 		</track>
 		<track name="camera:time"/>
 		<track name="camera:pos.x"/>
 		<track name="camera:pos.y"/>
 		<track name="camera:pos.z"/>
-		<track name="camera:target.x"/>
+		<track name="camera:target.x">
+			<key interpolation="0" value="-3" row="22"/>
+		</track>
 		<track name="camera:target.y"/>
 		<track name="camera:target.z"/>
 		<track name="camera:roll"/>
@@ -29,49 +35,56 @@
 		<track name="camera:shake.amt"/>
 		<track name="camera:shake.speed"/>
 		<track name="postproc:fade">
-			<key interpolation="0" row="0" value="1"/>
+			<key interpolation="0" value="1" row="0"/>
 		</track>
 		<track name="postproc:flash">
-			<key interpolation="0" row="0" value="0"/>
+			<key interpolation="0" value="0" row="0"/>
 		</track>
 		<track name="postproc:overlay.index">
-			<key interpolation="0" row="0" value="0"/>
+			<key interpolation="0" value="0" row="0"/>
 		</track>
 		<track name="postproc:overlay.fade">
-			<key interpolation="0" row="0" value="0"/>
+			<key interpolation="0" value="0" row="0"/>
 		</track>
 		<track name="postproc:colormap1">
-			<key interpolation="0" row="0" value="0"/>
+			<key interpolation="0" value="0" row="0"/>
 		</track>
 		<track name="postproc:colormap2">
-			<key interpolation="0" row="0" value="0"/>
+			<key interpolation="0" value="0" row="0"/>
 		</track>
 		<track name="postproc:colorfade">
-			<key interpolation="0" row="0" value="0"/>
+			<key interpolation="0" value="0" row="0"/>
 		</track>
 		<track name="postproc:pulse.amt">
-			<key interpolation="0" row="0" value="0"/>
+			<key interpolation="0" value="0" row="0"/>
 		</track>
 		<track name="postproc:pulse.speed">
-			<key interpolation="0" row="0" value="0"/>
+			<key interpolation="0" value="0" row="0"/>
 		</track>
 		<track name="postproc:lensdist">
-			<key interpolation="0" row="0" value="0.1"/>
+			<key interpolation="0" value="0.1" row="0"/>
 		</track>
 		<track name="postproc:bloom.cutoff">
-			<key interpolation="1" row="0" value="0"/>
-			<key interpolation="0" row="32" value="1"/>
+			<key interpolation="1" value="0" row="0"/>
+			<key interpolation="0" value="1" row="32"/>
 		</track>
 		<track name="postproc:bloom.shape">
-			<key interpolation="0" row="0" value="0.1"/>
+			<key interpolation="0" value="0.1" row="0"/>
 		</track>
 		<track name="postproc:bloom.amount">
-			<key interpolation="1" row="0" value="300"/>
-			<key interpolation="0" row="32" value="100"/>
+			<key interpolation="1" value="300" row="0"/>
+			<key interpolation="0" value="100" row="32"/>
 		</track>
 		<track name="postproc:flare.amount"/>
-		<track name="postproc:dof.scale"/>
-		<track name="postproc:dof.fdist"/>
+		<track name="postproc:dof.scale">
+			<key interpolation="0" value="10" row="0"/>
+			<key interpolation="0" value="5" row="20"/>
+		</track>
+		<track name="postproc:dof.fdist">
+			<key interpolation="0" value="10" row="0"/>
+			<key interpolation="1" value="5" row="20"/>
+			<key interpolation="0" value="10" row="32"/>
+		</track>
 		<track name="skybox:desat"/>
 		<track name="skybox:tex"/>
 	</tracks>

@@ -299,6 +299,20 @@ std::vector<std::vector<Vector3> > loadSpheres(const char *path)
 	return ret;
 }
 
+Surface loadSurface(renderer::Device &device, std::string fileName)
+{
+	D3DXIMAGE_INFO srcInfo;
+	core::d3dErr(D3DXGetImageInfoFromFile(fileName.c_str(), &srcInfo));
+
+	IDirect3DSurface9 *surface = NULL;
+	core::d3dErr(device->CreateOffscreenPlainSurface(srcInfo.Width, srcInfo.Height, D3DFMT_A8R8G8B8, D3DPOOL_SCRATCH, &surface, NULL));
+	core::d3dErr(D3DXLoadSurfaceFromFile(surface, NULL, NULL, fileName.c_str(), NULL, D3DX_FILTER_NONE, NULL, NULL));
+
+	Surface surface_wrapper;
+	surface_wrapper.attachRef(surface);
+	return surface_wrapper;
+}
+
 extern "C" _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
 
 int main(int argc, char *argv[])
@@ -513,7 +527,7 @@ int main(int argc, char *argv[])
 		Effect *particle_fx = engine::loadEffect(device, "data/particle.fx");
 
 		Effect *bartikkel_fx = engine::loadEffect(device, "data/bartikkel.fx");
-		Texture bartikkel_tex = engine::loadTexture(device, "data/bartikkel.png");
+		VolumeTexture bartikkel_tex = engine::loadVolumeTexture(device, "data/bartikkel.dds");
 		bartikkel_fx->setTexture("tex", bartikkel_tex);
 
 		Mesh *skybox_x = engine::loadMesh(device, "data/skybox.x");
@@ -564,6 +578,26 @@ int main(int argc, char *argv[])
 		groundplane_fx->setTexture("normal_tex", ground_normal_tex);
 		groundplane_fx->setTexture("specular_tex", ground_specular_tex);
 
+		Surface heightmap = loadSurface(device, "data/heightmap.png");
+		engine::ParticleCloud<float> cloud;
+
+		D3DLOCKED_RECT heightmapRect;
+		d3dErr(heightmap->LockRect(&heightmapRect, NULL, D3DLOCK_READONLY));
+		for (int y = 0; y < heightmap.getHeight(); ++y)
+			for (int x = 0; x < heightmap.getWidth(); ++x) {
+				unsigned int color = ((unsigned int*)((char*)heightmapRect.pBits + heightmapRect.Pitch * y))[x];
+				float z = ((color & 0xFF) / 255.0f) * 10;
+				if (z > 0) {
+					float xo = math::notRandf(cloud.particles.size() * 3 + 0) * 0.5f - 0.25f;
+					float yo = math::notRandf(cloud.particles.size() * 3 + 1) * 0.5f - 0.25f;
+					float s  = math::notRandf(cloud.particles.size() * 3 + 2) * 0.75f + 0.5f;
+					Vector3 pos(x - heightmap.getWidth() * 0.5f + xo, -(y - heightmap.getHeight() * 0.5f + yo), +z);
+
+					cloud.particles.push_back(engine::Particle<float>(Vector3(pos.x, pos.y, +pos.z) * 0.5f, s));
+					cloud.particles.push_back(engine::Particle<float>(Vector3(pos.x, pos.y, -pos.z) * 0.5f, s));
+				}
+			}
+
 		bool dump_video = false;
 		for (int i = 1; i < argc; ++i)
 			if (!strcmp(argv[i], "--dump-video"))
@@ -596,6 +630,7 @@ int main(int argc, char *argv[])
 			double beat = row / 4;
 
 			bool bartikkel = false;
+			bool metabart = false;
 			bool dof = true;
 			bool reflectionPlane = false;
 			bool groundplane = false;
@@ -614,9 +649,8 @@ int main(int argc, char *argv[])
 				break;
 
 			case 1:
-				corridor = true;
-				fogColor = Vector3(0.01, 0.01, 0.01);
-				reflectionPlane = true;
+				fogColor = Vector3(1, 1, 1);
+				metabart = true;
 				break;
 
 			case 2:
@@ -681,6 +715,8 @@ int main(int argc, char *argv[])
 			dof_fx->setVector2("nearFar", nearFar);
 			particle_fx->setFloat("focal_distance", focal_distance);
 			particle_fx->setFloat("coc_scale", coc_scale);
+			bartikkel_fx->setFloat("focal_distance", focal_distance);
+			bartikkel_fx->setFloat("coc_scale", coc_scale);
 
 #ifdef SYNC_PLAYER
 			if (part < 0)
@@ -897,7 +933,7 @@ int main(int argc, char *argv[])
 
 			device.setDepthStencilSurface(depth_target.getRenderTarget());
 
-			if (dustParticleCount > 0 || bartikkel) {
+			if (dustParticleCount > 0 || bartikkel || metabart) {
 				Matrix4x4 modelview = world * view;
 				Vector3 up(modelview._12, modelview._22, modelview._32);
 				Vector3 left(modelview._11, modelview._21, modelview._31);
@@ -933,31 +969,50 @@ int main(int argc, char *argv[])
 					particle_fx->draw(&particleStreamer);
 				}
 
-				if (bartikkel) {
+				if (bartikkel || metabart) {
 					bartikkel_fx->setVector3("up", up);
 					bartikkel_fx->setVector3("left", left);
 					bartikkel_fx->setMatrices(world, view, proj);
 					bartikkel_fx->setFloat("fogDensity", fogDensity);
+					bartikkel_fx->setVector2("viewport", Vector2(letterbox_viewport.Width, letterbox_viewport.Height));
 
-					particleStreamer.begin();
-					for (int i = 0; i < 50000; ++i) {
-						Vector3 pos = Vector3(math::notRandf(i) * 2 - 1, math::notRandf(i + 1) * 2 - 1, (i / 50000.0f) * 2 - 1) * 100;
-						Vector3 offset = normalize(Vector3(
-							sin(i * 0.23 + beat * 0.0532),
-							cos(i * 0.27 + beat * 0.0521),
-							cos(i * 0.31 - beat * 0.0512)
-							));
-						pos += offset * 3;
-						float size = 0.75f + math::notRandf(i * 3 + 1) * 0.5f;
-						particleStreamer.add(pos, size, Vector3(0, 0, 0));
-						if (!particleStreamer.getRoom()) {
-							particleStreamer.end();
-							bartikkel_fx->draw(&particleStreamer);
-							particleStreamer.begin();
+					if (bartikkel) {
+						particleStreamer.begin();
+						for (int i = 0; i < 50000; ++i) {
+							Vector3 pos = Vector3(math::notRandf(i) * 2 - 1, math::notRandf(i + 1) * 2 - 1, (i / 50000.0f) * 2 - 1) * 100;
+							Vector3 offset = normalize(Vector3(
+								sin(i * 0.23 + beat * 0.0532),
+								cos(i * 0.27 + beat * 0.0521),
+								cos(i * 0.31 - beat * 0.0512)
+								));
+							pos += offset * 3;
+							float size = 0.75f + math::notRandf(i * 3 + 1) * 0.5f;
+							particleStreamer.add(pos, size, Vector3(0, 0, 0));
+							if (!particleStreamer.getRoom()) {
+								particleStreamer.end();
+								bartikkel_fx->draw(&particleStreamer);
+								particleStreamer.begin();
+							}
 						}
+						particleStreamer.end();
+						bartikkel_fx->draw(&particleStreamer);
 					}
-					particleStreamer.end();
-					bartikkel_fx->draw(&particleStreamer);
+
+					if (metabart) {
+						cloud.sort(Vector3(modelview._13, modelview._23, modelview._33));
+						particleStreamer.begin();
+
+						for (engine::ParticleCloud<float>::ParticleContainer::const_iterator it = cloud.particles.begin(); it != cloud.particles.end(); ++it){
+							particleStreamer.add(it->pos, it->data, Vector3(0, 0, 0));
+							if (!particleStreamer.getRoom()) {
+								particleStreamer.end();
+								bartikkel_fx->draw(&particleStreamer);
+								particleStreamer.begin();
+							}
+						}
+						particleStreamer.end();
+						bartikkel_fx->draw(&particleStreamer);
+					}
 				}
 			}
 

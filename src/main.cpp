@@ -586,7 +586,7 @@ int main(int argc, char *argv[])
 		for (int y = 0; y < heightmap.getHeight(); ++y)
 			for (int x = 0; x < heightmap.getWidth(); ++x) {
 				unsigned int color = ((unsigned int*)((char*)heightmapRect.pBits + heightmapRect.Pitch * y))[x];
-				float z = ((color & 0xFF) / 255.0f) * 10;
+				float z = ((color & 0xFF) / 255.0f) * 15;
 				if (z > 0) {
 					float xo = math::notRandf(cloud.particles.size() * 3 + 0) * 0.5f - 0.25f;
 					float yo = math::notRandf(cloud.particles.size() * 3 + 1) * 0.5f - 0.25f;

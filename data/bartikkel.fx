@@ -65,7 +65,7 @@ VS_OUTPUT vertex(VS_INPUT In)
 
 float4 pixel(VS_OUTPUT In) : COLOR
 {
-	return tex3Dlod(tex_samp, float4(In.tex, 0)) * In.z;
+	return tex3D(tex_samp, In.tex) * In.z;
 }
 
 technique bartikkel {

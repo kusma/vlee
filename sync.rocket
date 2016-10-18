@@ -2,14 +2,14 @@
 	<tracks>
 		<track name="part">
 			<key interpolation="0" value="0" row="0"/>
-			<key interpolation="0" value="1" row="19"/>
+			<key interpolation="0" value="0" row="19"/>
 		</track>
 		<track name="spheres.anim"/>
 		<track name="spheres.dist">
-			<key interpolation="0" value="199999" row="0"/>
+			<key interpolation="0" value="1000" row="0"/>
 		</track>
 		<track name="spheres.pal">
-			<key interpolation="0" value="5" row="0"/>
+			<key interpolation="0" value="2" row="0"/>
 		</track>
 		<track name="camera:index">
 			<key interpolation="0" value="0" row="0"/>
@@ -23,9 +23,11 @@
 		</track>
 		<track name="camera:time"/>
 		<track name="camera:pos.x">
-			<key interpolation="1" value="-63" row="19"/>
+			<key interpolation="1" value="-33" row="19"/>
 			<key interpolation="0" value="-1" row="119"/>
-			<key interpolation="0" value="11" row="120"/>
+			<key interpolation="1" value="11" row="120"/>
+			<key interpolation="0" value="104" row="312"/>
+			<key interpolation="0" value="118" row="557"/>
 		</track>
 		<track name="camera:pos.y">
 			<key interpolation="0" value="0" row="119"/>
@@ -74,20 +76,18 @@
 			<key interpolation="0" value="0.1" row="0"/>
 		</track>
 		<track name="postproc:bloom.cutoff">
-			<key interpolation="1" value="0" row="0"/>
-			<key interpolation="0" value="1" row="32"/>
+			<key interpolation="0" value="0.5" row="0"/>
 		</track>
 		<track name="postproc:bloom.shape">
-			<key interpolation="0" value="0.1" row="0"/>
+			<key interpolation="0" value="1" row="0"/>
+			<key interpolation="0" value="1" row="32"/>
 		</track>
 		<track name="postproc:bloom.amount">
-			<key interpolation="1" value="300" row="0"/>
-			<key interpolation="0" value="100" row="32"/>
+			<key interpolation="0" value="0" row="0"/>
 		</track>
 		<track name="postproc:flare.amount"/>
 		<track name="postproc:dof.scale">
-			<key interpolation="0" value="10" row="0"/>
-			<key interpolation="0" value="5" row="20"/>
+			<key interpolation="0" value="1" row="0"/>
 		</track>
 		<track name="postproc:dof.fdist">
 			<key interpolation="0" value="10" row="0"/>

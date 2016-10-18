@@ -219,6 +219,10 @@ float4 pixel(VS_OUTPUT In, float2 vpos : VPOS) : COLOR
 
 	float3 col = tex2Dlod(color_samp, float4(pos, 0, 0)).rgb;
 
+	float dirt = srgb_decode(tex2Dlod(lensdirt_samp, float4(pos, 0, 0)));
+	col += sample_bloom(pos) * dirt;
+	col += sample_lensflare(pos) * dirt;
+
 	// blend overlay
 	float4 o = tex2D(overlay_samp, pos);
 	col = lerp(col, o.rgb, o.a * overlay_alpha);

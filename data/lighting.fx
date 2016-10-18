@@ -79,6 +79,7 @@ float4 pixel(VS_OUTPUT In) : COLOR
 
 	float3 col = albedo * ao;
 
+	/*
 	float3 viewDir = normalize(eyePos);
 	float3 rayOrigin = eyePos;
 	float3 rayDir = reflect(viewDir, eyeNormal);
@@ -90,19 +91,9 @@ float4 pixel(VS_OUTPUT In) : COLOR
 	}
 
 	col += spec * fres;
+	*/
 
 	col.rgb = lerp(fogColor, col.rgb, exp(-eyeDepth * fogDensity));
-
-//	return float4(albedo, 1);
-//	return float4(ao, ao, ao, 1);
-//	return float4(frac(eyePos), 1);
-//	return float4((float3)length(eyeNormal), 1);
-//	return float4(max(0, eyeNormal), 1);
-//	return float4(fres, fres, fres, 1);
-//	return float4(abs(matViewInverse[0].xyz), 1);
-//	return float4(spec, spec, spec, 1);
-//	return frac(100 * tex2D(depth_samp, In.tex.xy).r);
-//	return tex2D(depth_samp, float4(In.tex.xy, In.tex.xy * 10 - 5)).r;
 
 	if (length(eyeNormal) < 0.1)
 		return float4(fogColor, 1);

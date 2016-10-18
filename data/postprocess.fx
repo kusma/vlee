@@ -201,6 +201,15 @@ float srgb_decode(float v)
 		return pow((v + 0.055) / 1.055, 2.4);
 }
 
+float3 posterize(float3 v, int3 levels)
+{
+	float3 value = v * levels;
+	float3 vfract = frac(value);
+	float3 vfloor = floor(value);
+	float3 fw = fwidth(value) * 0.5;
+	return (vfloor + smoothstep(0.5 - fw, 0.5 + fw, vfract)) / levels;
+}
+
 float4 pixel(VS_OUTPUT In, float2 vpos : VPOS) : COLOR
 {
 	float haspect = viewport.x / viewport.y;
@@ -208,19 +217,7 @@ float4 pixel(VS_OUTPUT In, float2 vpos : VPOS) : COLOR
 	float f = (1 + r2 * (2 * distCoeff * sqrt(r2))) / (1 + distCoeff * 4);
 	float2 pos = f * (In.uv - 0.5) + 0.5;
 
-	float dist = pow(2 * distance(In.uv, float2(0.5, 0.5)), 2);
-	const float sep = 0.03;
-	float2 end = (pos - 0.5) * (1 - dist * sep * 2) + 0.5;
-
-	int samples = clamp(int(length(viewport * (end - pos) / 2)), 3, 8);
-	float3 col = sample_spectrum(color_samp, pos, end, samples, 0);
-
-	float dirt = srgb_decode(tex2Dlod(lensdirt_samp, float4(pos, 0, 0)));
-	col += sample_bloom(pos) * dirt;
-	col += sample_lensflare(pos) * dirt;
-	col *= 1 - tex2Dlod(vignette_samp, float4(pos, 0, 0)).a;
-
-	col = color_correct(col);
+	float3 col = tex2Dlod(color_samp, float4(pos, 0, 0)).rgb;
 
 	// blend overlay
 	float4 o = tex2D(overlay_samp, pos);
@@ -230,7 +227,11 @@ float4 pixel(VS_OUTPUT In, float2 vpos : VPOS) : COLOR
 	col = col * fade + flash;
 
 	// a tad of noise makes everything look cooler
-	col += (tex2D(noise_samp, In.uv * nscale + noffs) - 0.5) * (1.0 / 8);
+	col += (tex2D(noise_samp, In.uv * nscale + noffs).r - 0.5) * (1.0 / 3);
+
+	col = posterize(col.ggg, int3(3, 3, 3));
+
+	col *= 1 - tex2Dlod(vignette_samp, float4(pos, 0, 0)).a * 0.5;
 
 	return float4(col, 1);
 }

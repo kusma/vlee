@@ -55,17 +55,19 @@ VS_OUTPUT vertex(VS_INPUT In)
 
 	float2 uv = float2(In.uv.x * 0.5, -In.uv.y * 0.5) + float2(0.5f, 0.5f);
 	float size = abs(coc(eyeDepth));
-	size += distance(screenPos.xy / screenPos.w, 0.0) * 0.0125;
+	size += distance(screenPos.xy / screenPos.w, 0.0) * 0.0125 * 0.5;
 	size = clamp(size * viewport.y, 2, 150);
 	size *= viewport.y / 512;
 	size *= screenPos.w;
-	Out.tex = float3(uv, log2(size) / 7);
+	float slice = log2(size) / log2(81);
+	slice = clamp(slice, 1.0 / 10, 1 - 1.0 / 10);
+	Out.tex = float3(uv, slice);
 	return Out;
 }
 
 float4 pixel(VS_OUTPUT In) : COLOR
 {
-	return tex3D(tex_samp, In.tex) * In.z;
+	return tex3Dlod(tex_samp, float4(In.tex, 0)) * In.z;
 }
 
 technique bartikkel {

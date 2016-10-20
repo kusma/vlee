@@ -79,8 +79,8 @@ sampler overlay_samp = sampler_state {
 	MipFilter = LINEAR;
 	MinFilter = LINEAR;
 	MagFilter = LINEAR;
-	AddressU = CLAMP;
-	AddressV = CLAMP;
+	AddressU = BORDER;
+	AddressV = BORDER;
 	sRGBTexture = TRUE;
 };
 
@@ -231,7 +231,7 @@ float4 pixel(VS_OUTPUT In, float2 vpos : VPOS) : COLOR
 	col = col * fade + flash;
 
 	// a tad of noise makes everything look cooler
-	col += (tex2D(noise_samp, In.uv * nscale + noffs).r - 0.5) * (1.0 / 3);
+	col += (tex2D(noise_samp, In.uv * nscale + noffs).r - 0.5) * (1.0 / 2);
 
 	col = posterize(col.ggg, int3(3, 3, 3));
 

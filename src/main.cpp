@@ -876,7 +876,7 @@ int main(int argc, char *argv[])
 				sphere_fx->drawPass(&particleStreamer, 1);
 			}
 
-			float fogDensity = 0.0075f;
+			float fogDensity = 0.025f;
 			lighting_fx->setVector3("fogColor", fogColor);
 			lighting_fx->setFloat("fogDensity", fogDensity);
 

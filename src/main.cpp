@@ -169,35 +169,6 @@ Matrix4x4 getCubemapViewMatrix(D3DCUBEMAP_FACES face)
 	return view;
 }
 
-Matrix4x4 calcPlaneMatrix(Vector3 &v0, Vector3 &v1, Vector3 &v2)
-{
-	Vector3 a = v0 - v1;
-	Vector3 b = v2 - v0;
-	Vector3 n = cross(b, a);
-
-	Matrix4x4 ret;
-	ret._11 = a.x;
-	ret._12 = a.y;
-	ret._13 = a.z;
-	ret._14 = 0;
-
-	ret._21 = b.x;
-	ret._22 = b.y;
-	ret._23 = b.z;
-	ret._24 = 0;
-
-	ret._31 = n.x;
-	ret._32 = n.y;
-	ret._33 = n.z;
-	ret._34 = 0;
-
-	ret._41 = v0.x;
-	ret._42 = v0.y;
-	ret._43 = v0.z;
-	ret._44 = 0;
-	return ret;
-}
-
 std::vector<renderer::VolumeTexture> loadColorMaps(renderer::Device &device, std::string folder)
 {
 	const int MAP_SIZE = 32;
@@ -565,19 +536,6 @@ int main(int argc, char *argv[])
 		Texture kulefarger_tex = engine::loadTexture(device, "data/kulefarger.png");
 		sphere_fx->setTexture("colors_tex", kulefarger_tex);
 
-		Effect *plane_fx = engine::loadEffect(device, "data/plane.fx");
-
-		Mesh *groundplane_x = engine::loadMesh(device, "data/groundplane.x");
-		Effect *groundplane_fx = engine::loadEffect(device, "data/groundplane.fx");
-
-		Texture ground_albedo_tex = engine::loadTexture(device, "data/concrete_01_dif.png");
-		Texture ground_normal_tex = engine::loadTexture(device, "data/concrete_01_nm.png");
-		Texture ground_specular_tex = engine::loadTexture(device, "data/concrete_01_spec.png");
-
-		groundplane_fx->setTexture("albedo_tex", ground_albedo_tex);
-		groundplane_fx->setTexture("normal_tex", ground_normal_tex);
-		groundplane_fx->setTexture("specular_tex", ground_specular_tex);
-
 		Surface heightmap = loadSurface(device, "data/heightmap.png");
 		engine::ParticleCloud<float> cloud;
 
@@ -632,37 +590,35 @@ int main(int argc, char *argv[])
 			bool bartikkel = false;
 			bool metabart = false;
 			bool dof = true;
-			bool reflectionPlane = false;
-			bool groundplane = false;
 			bool corridor = false;
 			bool sphereSphere = false;
 			bool sphereColumn = false;
 			int dustParticleCount = 0;
+			float fogDensity = 0.025f;
 			Vector3 fogColor(0, 0, 0);
 
 			int part = int(sync_get_val(partTrack, row));
 			switch (part) {
 			case 0:
 				fogColor = Vector3(1, 1, 1);
+				fogDensity = 0.05f;
 				bartikkel = true;
-				sphereSphere = true;
 				break;
 
 			case 1:
 				fogColor = Vector3(1, 1, 1);
+				fogDensity = 0.001f;
 				metabart = true;
 				break;
 
 			case 2:
 				sphereSphere = true;
-				reflectionPlane = true;
 				break;
 
 			case 3:
 				corridor = true;
 				fogColor = Vector3(0.01, 0.01, 0.01);
 				sphereColumn = true;
-				reflectionPlane = true;
 				break;
 			}
 
@@ -876,7 +832,6 @@ int main(int argc, char *argv[])
 				sphere_fx->drawPass(&particleStreamer, 1);
 			}
 
-			float fogDensity = 0.025f;
 			lighting_fx->setVector3("fogColor", fogColor);
 			lighting_fx->setFloat("fogDensity", fogDensity);
 

@@ -1,125 +1,183 @@
 <sync rows="4096">
 	<tracks>
 		<track name="part">
-			<key interpolation="0" value="0" row="0"/>
-			<key interpolation="0" value="1" row="19"/>
-			<key interpolation="0" value="0" row="192"/>
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="0" row="192"/>
+			<key value="1" interpolation="0" row="1032"/>
 		</track>
 		<track name="spheres.anim"/>
 		<track name="spheres.dist">
-			<key interpolation="0" value="1000" row="0"/>
-			<key interpolation="0" value="1" row="192"/>
+			<key value="1000" interpolation="0" row="0"/>
+			<key value="1" interpolation="0" row="192"/>
 		</track>
 		<track name="spheres.pal">
-			<key interpolation="0" value="2" row="0"/>
+			<key value="2" interpolation="0" row="0"/>
 		</track>
 		<track name="camera:index">
-			<key interpolation="0" value="0" row="0"/>
-			<key interpolation="0" value="3" row="19"/>
+			<key value="0" interpolation="0" row="0"/>
+			<key value="3" interpolation="0" row="19"/>
 		</track>
 		<track name="camera:dist">
-			<key interpolation="1" value="10" row="0"/>
-			<key interpolation="0" value="1" row="18"/>
-			<key interpolation="0" value="0" row="19"/>
-			<key interpolation="0" value="100" row="200"/>
+			<key value="10" interpolation="1" row="0"/>
+			<key value="1" interpolation="0" row="18"/>
+			<key value="0" interpolation="0" row="19"/>
+			<key value="100" interpolation="0" row="200"/>
 		</track>
 		<track name="camera:time"/>
 		<track name="camera:pos.x">
-			<key interpolation="1" value="-33" row="19"/>
-			<key interpolation="0" value="-1" row="119"/>
-			<key interpolation="1" value="11" row="120"/>
-			<key interpolation="0" value="104" row="312"/>
-			<key interpolation="0" value="118" row="557"/>
+			<key value="-33" interpolation="1" row="19"/>
+			<key value="70" interpolation="0" row="239"/>
+			<key value="100" interpolation="0" row="240"/>
+			<key value="17" interpolation="0" row="672"/>
+			<key value="0" interpolation="0" row="1032"/>
+			<key value="0" interpolation="0" row="1047"/>
+			<key value="50" interpolation="1" row="1056"/>
+			<key value="-50" interpolation="0" row="1111"/>
 		</track>
 		<track name="camera:pos.y">
-			<key interpolation="0" value="0" row="119"/>
-			<key interpolation="0" value="1" row="120"/>
+			<key value="20" interpolation="1" row="240"/>
+			<key value="-20" interpolation="0" row="543"/>
+			<key value="20" interpolation="0" row="544"/>
+			<key value="20.4" interpolation="0" row="608"/>
+			<key value="-7" interpolation="0" row="672"/>
+			<key value="0" interpolation="0" row="1032"/>
+			<key value="0" interpolation="0" row="1047"/>
+			<key value="0" interpolation="0" row="1056"/>
 		</track>
 		<track name="camera:pos.z">
-			<key interpolation="0" value="0" row="119"/>
-			<key interpolation="2" value="-5" row="120"/>
-			<key interpolation="0" value="20" row="168"/>
+			<key value="20" interpolation="0" row="168"/>
+			<key value="2" interpolation="1" row="544"/>
+			<key value="40" interpolation="0" row="607"/>
+			<key value="51.5" interpolation="0" row="608"/>
+			<key value="-10" interpolation="1" row="672"/>
+			<key value="10" interpolation="0" row="799"/>
+			<key value="100" interpolation="1" row="1032"/>
+			<key value="10" interpolation="0" row="1047"/>
+			<key value="20" interpolation="0" row="1056"/>
 		</track>
-		<track name="camera:target.x"/>
-		<track name="camera:target.y"/>
-		<track name="camera:target.z"/>
+		<track name="camera:target.x">
+			<key value="0" interpolation="0" row="1032"/>
+			<key value="8" interpolation="0" row="1056"/>
+		</track>
+		<track name="camera:target.y">
+			<key value="0" interpolation="0" row="1032"/>
+			<key value="0" interpolation="0" row="1056"/>
+		</track>
+		<track name="camera:target.z">
+			<key value="0" interpolation="0" row="1032"/>
+			<key value="0" interpolation="0" row="1056"/>
+		</track>
 		<track name="camera:roll"/>
 		<track name="camera:offset"/>
 		<track name="camera:shake.amt"/>
 		<track name="camera:shake.speed"/>
 		<track name="postproc:fade">
-			<key interpolation="0" value="0" row="0"/>
-			<key interpolation="0" value="1" row="32"/>
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="1" row="24"/>
+			<key value="1" interpolation="0" row="40"/>
+			<key value="1" interpolation="1" row="664"/>
+			<key value="0" interpolation="1" row="672"/>
+			<key value="1" interpolation="0" row="680"/>
+			<key value="1" interpolation="1" row="1021"/>
+			<key value="0" interpolation="0" row="1024"/>
+			<key value="1" interpolation="1" row="1032"/>
+			<key value="0" interpolation="0" row="1047"/>
+			<key value="1" interpolation="0" row="1056"/>
 		</track>
 		<track name="postproc:flash">
-			<key interpolation="0" value="0" row="0"/>
+			<key value="0" interpolation="0" row="0"/>
+			<key value="1" interpolation="1" row="32"/>
+			<key value="0" interpolation="0" row="40"/>
+			<key value="0" interpolation="1" row="232"/>
+			<key value="1" interpolation="1" row="240"/>
+			<key value="0" interpolation="0" row="248"/>
+			<key value="0.5" interpolation="1" row="544"/>
+			<key value="0" interpolation="0" row="552"/>
+			<key value="0.5" interpolation="1" row="608"/>
+			<key value="0" interpolation="0" row="616"/>
+			<key value="1" interpolation="1" row="1032"/>
+			<key value="0" interpolation="0" row="1040"/>
+			<key value="0.5" interpolation="1" row="1056"/>
+			<key value="0" interpolation="0" row="1064"/>
 		</track>
 		<track name="postproc:overlay.index">
-			<key interpolation="0" value="0" row="0"/>
-			<key interpolation="0" value="1" row="32"/>
-			<key interpolation="0" value="2" row="80"/>
-			<key interpolation="0" value="3" row="144"/>
-			<key interpolation="0" value="5" row="264"/>
-			<key interpolation="0" value="6" row="368"/>
-			<key interpolation="0" value="4" row="480"/>
+			<key value="0" interpolation="0" row="0"/>
+			<key value="1" interpolation="0" row="40"/>
+			<key value="4" interpolation="0" row="80"/>
+			<key value="7" interpolation="0" row="144"/>
+			<key value="8" interpolation="0" row="264"/>
+			<key value="5" interpolation="0" row="368"/>
+			<key value="9" interpolation="0" row="480"/>
+			<key value="3" interpolation="0" row="512"/>
 		</track>
 		<track name="postproc:overlay.fade">
-			<key interpolation="0" value="0" row="0"/>
-			<key interpolation="1" value="0" row="32"/>
-			<key interpolation="0" value="1" row="48"/>
-			<key interpolation="1" value="1" row="72"/>
-			<key interpolation="0" value="0" row="79"/>
-			<key interpolation="1" value="0" row="80"/>
-			<key interpolation="0" value="1" row="89"/>
-			<key interpolation="1" value="1" row="112"/>
-			<key interpolation="0" value="0" row="128"/>
-			<key interpolation="1" value="0" row="144"/>
-			<key interpolation="0" value="1" row="160"/>
-			<key interpolation="1" value="1" row="224"/>
-			<key interpolation="0" value="0" row="232"/>
-			<key interpolation="1" value="0" row="264"/>
-			<key interpolation="0" value="1" row="280"/>
-			<key interpolation="1" value="1" row="360"/>
-			<key interpolation="0" value="0" row="367"/>
-			<key interpolation="1" value="0" row="368"/>
-			<key interpolation="0" value="1" row="384"/>
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="1" row="40"/>
+			<key value="1" interpolation="0" row="48"/>
+			<key value="1" interpolation="1" row="64"/>
+			<key value="0" interpolation="0" row="79"/>
+			<key value="0" interpolation="1" row="80"/>
+			<key value="1" interpolation="0" row="88"/>
+			<key value="1" interpolation="1" row="96"/>
+			<key value="0" interpolation="0" row="120"/>
+			<key value="0" interpolation="1" row="144"/>
+			<key value="1" interpolation="0" row="160"/>
+			<key value="1" interpolation="1" row="224"/>
+			<key value="0" interpolation="0" row="232"/>
+			<key value="0" interpolation="1" row="264"/>
+			<key value="1" interpolation="0" row="280"/>
+			<key value="1" interpolation="1" row="360"/>
+			<key value="0" interpolation="0" row="367"/>
+			<key value="0" interpolation="1" row="368"/>
+			<key value="1" interpolation="0" row="384"/>
+			<key value="1" interpolation="1" row="456"/>
+			<key value="0" interpolation="0" row="472"/>
+			<key value="0" interpolation="1" row="480"/>
+			<key value="1" interpolation="0" row="488"/>
+			<key value="1" interpolation="1" row="496"/>
+			<key value="0" interpolation="0" row="504"/>
+			<key value="0" interpolation="1" row="512"/>
+			<key value="1" interpolation="0" row="520"/>
+			<key value="1" interpolation="1" row="528"/>
+			<key value="0" interpolation="0" row="543"/>
 		</track>
 		<track name="postproc:colormap1">
-			<key interpolation="0" value="0" row="0"/>
+			<key value="0" interpolation="0" row="0"/>
 		</track>
 		<track name="postproc:colormap2">
-			<key interpolation="0" value="0" row="0"/>
+			<key value="0" interpolation="0" row="0"/>
 		</track>
 		<track name="postproc:colorfade">
-			<key interpolation="0" value="0" row="0"/>
+			<key value="0" interpolation="0" row="0"/>
 		</track>
 		<track name="postproc:pulse.amt">
-			<key interpolation="0" value="0" row="0"/>
+			<key value="0" interpolation="0" row="0"/>
 		</track>
 		<track name="postproc:pulse.speed">
-			<key interpolation="0" value="0" row="0"/>
+			<key value="0" interpolation="0" row="0"/>
 		</track>
 		<track name="postproc:lensdist">
-			<key interpolation="0" value="0.1" row="0"/>
+			<key value="0.1" interpolation="0" row="0"/>
 		</track>
 		<track name="postproc:bloom.cutoff">
-			<key interpolation="0" value="0.5" row="0"/>
+			<key value="0.5" interpolation="0" row="0"/>
 		</track>
 		<track name="postproc:bloom.shape">
-			<key interpolation="0" value="1" row="0"/>
-			<key interpolation="0" value="1" row="32"/>
+			<key value="1" interpolation="0" row="0"/>
+			<key value="1" interpolation="0" row="32"/>
 		</track>
 		<track name="postproc:bloom.amount">
-			<key interpolation="0" value="0" row="0"/>
+			<key value="0" interpolation="0" row="0"/>
 		</track>
 		<track name="postproc:flare.amount"/>
-		<track name="postproc:dof.scale">
-			<key interpolation="0" value="1" row="0"/>
-		</track>
 		<track name="postproc:dof.fdist">
-			<key interpolation="0" value="10" row="0"/>
-			<key interpolation="1" value="5" row="20"/>
-			<key interpolation="0" value="1" row="32"/>
+			<key value="0" interpolation="0" row="0"/>
+			<key value="1" interpolation="1" row="608"/>
+			<key value="10" interpolation="0" row="671"/>
+		</track>
+		<track name="postproc:dof.scale">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="1" interpolation="0" row="608"/>
 		</track>
 		<track name="skybox:desat"/>
 		<track name="skybox:tex"/>

@@ -169,6 +169,15 @@ Matrix4x4 getCubemapViewMatrix(D3DCUBEMAP_FACES face)
 	return view;
 }
 
+void normalizePlane(float plane[4])
+{
+	float mag = sqrt(plane[0] * plane[0] +
+	                 plane[1] * plane[1] +
+	                 plane[2] * plane[2]);
+	float scale = 1.0f / mag;
+	for (int i = 0; i < 4; ++i)
+		plane[i] = plane[i] * scale;
+}
 std::vector<renderer::VolumeTexture> loadColorMaps(renderer::Device &device, std::string folder)
 {
 	const int MAP_SIZE = 32;
@@ -687,7 +696,7 @@ int main(int argc, char *argv[])
 			camTarget += camOffs * float(sync_get_val(cameraShakeAmtTrack, row));
 
 			double camRoll = sync_get_val(cameraRollTrack, row) * (M_PI / 180);
-			double camFov = sync_get_val(cameraFovTrack, row);
+			float camFov = (float)sync_get_val(cameraFovTrack, row);
 			Matrix4x4 view;
 			D3DXMatrixLookAtLH(&view, &camPos, &camTarget, &camUp);
 			view *= Matrix4x4::rotation(Vector3(0, 0, camRoll));
@@ -743,7 +752,15 @@ int main(int argc, char *argv[])
 			if (sphereSphere || sphereColumn) {
 				sphere_fx->setMatrices(world, view, proj);
 				sphere_fx->setVector2("nearFar", nearFar);
+				sphere_fx->setFloat("nearPlane", zNear);
 				sphere_fx->setVector2("viewport", Vector2(letterbox_viewport.Width, letterbox_viewport.Height));
+
+				math::Matrix4x4 worldViewProj = world * view * proj;
+
+				float frustum[6][4];
+				worldViewProj.extractFrustumPlanes(frustum);
+				for (int i = 0; i < 6; ++i)
+					normalizePlane(frustum[i]);
 
 				float anim = float(sync_get_val(spheresAnimTrack, row));
 				float dist = float(sync_get_val(spheresDistTrack, row));
@@ -805,7 +822,26 @@ int main(int argc, char *argv[])
 
 				particleStreamer.begin();
 				for (size_t i = 0; i < spheres.size(); ++i) {
-					particleStreamer.add(spheres[i].pos, spheres[i].size, spheres[i].color);
+					Vector3 pos = spheres[i].pos;
+					float size = spheres[i].size;
+
+					bool visible = true;
+					for (int j = 0; j < 6; ++j) {
+						float d = frustum[j][0] * pos.x +
+							frustum[j][1] * pos.y +
+							frustum[j][2] * pos.z +
+							frustum[j][3];
+
+						if (d < -size) {
+							visible = false;
+							break;
+						}
+					}
+
+					if (!visible)
+						continue;
+
+					particleStreamer.add(pos, size, spheres[i].color);
 					if (!particleStreamer.getRoom()) {
 						particleStreamer.end();
 						sphere_fx->drawPass(&particleStreamer, 0);
@@ -824,7 +860,26 @@ int main(int argc, char *argv[])
 
 				particleStreamer.begin();
 				for (size_t i = 0; i < spheres.size(); ++i) {
-					particleStreamer.add(spheres[i].pos, spheres[i].size);
+					Vector3 pos = spheres[i].pos;
+					float size = spheres[i].size * 3;
+
+					bool visible = true;
+					for (int j = 0; j < 6; ++j) {
+						float d = frustum[j][0] * pos.x +
+							frustum[j][1] * pos.y +
+							frustum[j][2] * pos.z +
+							frustum[j][3];
+
+						if (d < -size) {
+							visible = false;
+							break;
+						}
+					}
+
+					if (!visible)
+						continue;
+
+					particleStreamer.add(pos, spheres[i].size, spheres[i].color);
 					if (!particleStreamer.getRoom()) {
 						particleStreamer.end();
 						sphere_fx->drawPass(&particleStreamer, 1);

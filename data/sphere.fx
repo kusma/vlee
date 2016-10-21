@@ -2,6 +2,7 @@ const float4x4 matWorldView : WORLDVIEW;
 const float4x4 matProjection : PROJECTION;
 const float4x4 matProjectionInverse : PROJECTIONINVERSE;
 const float2 nearFar;
+const float nearPlane;
 
 #ifdef FAST_BOUNDS
 
@@ -16,6 +17,9 @@ float4 getSphereBounds(float3 center, float r)
 
 float4 getSphereBounds(float3 center, float r)
 {
+	if (center.z < nearPlane + r)
+		return float4(-1, -1, 1, 1); // whole screen
+
 	float2 cLengthRcp = float2(dot(center.xz, center.xz),
 	                           dot(center.yz, center.yz));
 	float2 tSquared = cLengthRcp - r * r;

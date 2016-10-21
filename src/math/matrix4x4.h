@@ -92,7 +92,46 @@ namespace math
 			D3DXMatrixLookAtLH(this, &eye, &target, &up);
 			*this *= rotation(Vector3(0, 0, roll));;
 		}
-		
+
+		void extractFrustumPlanes(float frustum[6][4])
+		{
+			// Left clipping plane
+			frustum[0][0] = _14 + _11;
+			frustum[0][1] = _24 + _21;
+			frustum[0][2] = _34 + _31;
+			frustum[0][3] = _44 + _41;
+
+			// Right clipping plane
+			frustum[1][0] = _14 - _11;
+			frustum[1][1] = _24 - _21;
+			frustum[1][2] = _34 - _31;
+			frustum[1][3] = _44 - _41;
+
+			// Top clipping plane
+			frustum[2][0] = _14 - _12;
+			frustum[2][1] = _24 - _22;
+			frustum[2][2] = _34 - _32;
+			frustum[2][3] = _44 - _42;
+
+			// Bottom clipping plane
+			frustum[3][0] = _14 + _12;
+			frustum[3][1] = _24 + _22;
+			frustum[3][2] = _34 + _32;
+			frustum[3][3] = _44 + _42;
+
+			// Near clipping plane
+			frustum[4][0] = _13;
+			frustum[4][1] = _23;
+			frustum[4][2] = _33;
+			frustum[4][3] = _43;
+
+			// Far clipping plane
+			frustum[5][0] = _14 - _13;
+			frustum[5][1] = _24 - _23;
+			frustum[5][2] = _34 - _33;
+			frustum[5][3] = _44 - _43;
+		}
+
 		Matrix4x4 inverse() const
 		{
 			Matrix4x4 res;

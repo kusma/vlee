@@ -407,6 +407,7 @@ int main(int argc, char *argv[])
 		const sync_track *cameraOffsetTrack     = sync_get_track(rocket, "camera:offset");
 		const sync_track *cameraShakeAmtTrack   = sync_get_track(rocket, "camera:shake.amt");
 		const sync_track *cameraShakeSpeedTrack = sync_get_track(rocket, "camera:shake.speed");
+		const sync_track *cameraFovTrack        = sync_get_track(rocket, "camera:fov");
 
 
 		const sync_track *colorMapFadeTrack  = sync_get_track(rocket, "postproc:fade");
@@ -616,10 +617,11 @@ int main(int argc, char *argv[])
 				break;
 
 			case 3:
-				corridor = true;
-				fogColor = Vector3(0.01, 0.01, 0.01);
+				fogColor = Vector3(0, 0, 0);
 				sphereColumn = true;
 				break;
+
+//				corridor = true;
 			}
 
 			double camTime = sync_get_val(cameraTimeTrack, row);
@@ -685,12 +687,13 @@ int main(int argc, char *argv[])
 			camTarget += camOffs * float(sync_get_val(cameraShakeAmtTrack, row));
 
 			double camRoll = sync_get_val(cameraRollTrack, row) * (M_PI / 180);
+			double camFov = sync_get_val(cameraFovTrack, row);
 			Matrix4x4 view;
 			D3DXMatrixLookAtLH(&view, &camPos, &camTarget, &camUp);
 			view *= Matrix4x4::rotation(Vector3(0, 0, camRoll));
 
 			Matrix4x4 world = Matrix4x4::identity();
-			Matrix4x4 proj  = Matrix4x4::projection(80.0f, float(DEMO_ASPECT), zNear, zFar);
+			Matrix4x4 proj  = Matrix4x4::projection(camFov, float(DEMO_ASPECT), zNear, zFar);
 
 			// render
 			device->BeginScene();
@@ -781,16 +784,16 @@ int main(int argc, char *argv[])
 					for (size_t i = 0; i < spheres.size(); ++i) {
 						float s = math::notRandf(i * 3 + 0) * float(M_PI * 2);
 						float t = math::notRandf(i * 3 + 1) * 2 - 1;
-						Vector3 pos = Vector3(sin(s), cos(s), i);
+						Vector3 pos = Vector3(sin(s), cos(s), i * 0.1f);
 						Vector3 offset = normalize(Vector3(
 								sin((i % 1337) * 12.0 + anim * 0.0332),
 								cos((i % 1338) * 15.0 + anim * 0.041),
-								cos((i % 1339) * 13.0 - anim * 0.0323)
+								cos((i % 1339) * 13.0 - anim * 0.0323) * 0
 								));
 						pos += offset * dist;
 						float size = 0.2f + pow(math::notRandf(i), 5.0f) * 0.75f;
 						spheres[i].pos = pos;
-						spheres[i].size = size * 10;
+						spheres[i].size = size * 5;
 
 						int color_idx = int(math::notRandf(i * 3 + 2) * kulefarger_tex.getWidth());
 						float color = (0.5f + color_idx) / kulefarger_tex.getWidth();

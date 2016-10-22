@@ -446,6 +446,7 @@ int main(int argc, char *argv[])
 		const sync_track *dofFocalDistTrack = sync_get_track(rocket, "postproc:dof.fdist");
 
 		const sync_track *spheresAnimTrack = sync_get_track(rocket, "spheres.anim");
+		const sync_track *spheresAnimOffsetTrack = sync_get_track(rocket, "spheres.animOffset");
 		const sync_track *spheresDistTrack = sync_get_track(rocket, "spheres.dist");
 		const sync_track *spheresPalTrack = sync_get_track(rocket, "spheres.pal");
 
@@ -772,7 +773,7 @@ int main(int argc, char *argv[])
 				for (int i = 0; i < 6; ++i)
 					normalizePlane(frustum[i]);
 
-				float anim = float(sync_get_val(spheresAnimTrack, row));
+				float anim = float(sync_get_val(spheresAnimTrack, row)) + float(sync_get_val(spheresAnimOffsetTrack, row));
 				float dist = float(sync_get_val(spheresDistTrack, row));
 				float pal = float(0.5f + sync_get_val(spheresPalTrack, row)) / kulefarger_tex.getHeight();
 

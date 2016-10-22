@@ -223,12 +223,14 @@ float4 pixel(VS_OUTPUT In, float2 vpos : VPOS) : COLOR
 	col += sample_bloom(pos) * dirt;
 	col += sample_lensflare(pos) * dirt;
 
+	col *= fade;
+
 	// blend overlay
 	float4 o = tex2D(overlay_samp, pos);
 	col = lerp(col, o.rgb, o.a * overlay_alpha);
 
 	// apply flashes
-	col = col * fade + flash;
+	col += flash;
 
 	// a tad of noise makes everything look cooler
 	col += (tex2D(noise_samp, In.uv * nscale + noffs).r - 0.5) * (1.0 / 2);

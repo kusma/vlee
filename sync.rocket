@@ -418,6 +418,14 @@
 			<key interpolation="1" value="1" row="2456"/>
 			<key interpolation="0" value="0" row="2463"/>
 			<key interpolation="0" value="1" row="2464"/>
+			<key interpolation="1" value="0.5" row="2480"/>
+			<key interpolation="1" value="0" row="2483"/>
+			<key interpolation="1" value="0.5" row="2484"/>
+			<key interpolation="1" value="0" row="2485"/>
+			<key interpolation="1" value="0.5" row="2486"/>
+			<key interpolation="0" value="0" row="2487"/>
+			<key interpolation="1" value="0.75" row="2488"/>
+			<key interpolation="0" value="1" row="2491"/>
 			<key interpolation="1" value="1" row="2656"/>
 			<key interpolation="0" value="0" row="2688"/>
 		</track>
@@ -502,11 +510,35 @@
 			<key interpolation="0" value="0" row="2215"/>
 			<key interpolation="1" value="1" row="2264"/>
 			<key interpolation="0" value="0" row="2271"/>
+			<key interpolation="1" value="0.5" row="2352"/>
+			<key interpolation="1" value="0" row="2355"/>
+			<key interpolation="1" value="0.5" row="2356"/>
+			<key interpolation="1" value="0" row="2357"/>
+			<key interpolation="1" value="0.5" row="2358"/>
+			<key interpolation="0" value="0" row="2359"/>
+			<key interpolation="1" value="0.75" row="2360"/>
+			<key interpolation="0" value="0" row="2363"/>
 			<key interpolation="0" value="0" row="2399"/>
 			<key interpolation="1" value="1" row="2400"/>
 			<key interpolation="0" value="0" row="2407"/>
+			<key interpolation="1" value="0.5" row="2416"/>
+			<key interpolation="1" value="0" row="2419"/>
+			<key interpolation="1" value="0.5" row="2420"/>
+			<key interpolation="1" value="0" row="2421"/>
+			<key interpolation="1" value="0.5" row="2422"/>
+			<key interpolation="0" value="0" row="2423"/>
+			<key interpolation="1" value="0.75" row="2424"/>
+			<key interpolation="0" value="0" row="2427"/>
 			<key interpolation="1" value="1" row="2464"/>
 			<key interpolation="0" value="0" row="2471"/>
+			<key interpolation="1" value="0.5" row="2480"/>
+			<key interpolation="1" value="0" row="2483"/>
+			<key interpolation="1" value="0.5" row="2484"/>
+			<key interpolation="1" value="0" row="2485"/>
+			<key interpolation="1" value="0.5" row="2486"/>
+			<key interpolation="0" value="0" row="2487"/>
+			<key interpolation="1" value="0.75" row="2488"/>
+			<key interpolation="0" value="0" row="2491"/>
 			<key interpolation="1" value="1" row="2592"/>
 			<key interpolation="0" value="0" row="2648"/>
 		</track>
@@ -688,10 +720,25 @@
 			<key interpolation="0" value="0" row="2269"/>
 			<key interpolation="1" value="0.1" row="2272"/>
 			<key interpolation="0" value="0" row="2285"/>
-			<key interpolation="1" value="0.3" row="2344"/>
+			<key interpolation="1" value="0.25" row="2344"/>
+			<key interpolation="1" value="0" row="2347"/>
+			<key interpolation="1" value="0.25" row="2348"/>
+			<key interpolation="1" value="0" row="2349"/>
+			<key interpolation="1" value="0.25" row="2350"/>
+			<key interpolation="0" value="0" row="2351"/>
+			<key interpolation="1" value="0.4" row="2352"/>
+			<key interpolation="0" value="0" row="2355"/>
 			<key interpolation="0" value="0" row="2357"/>
 			<key interpolation="1" value="0.3" row="2384"/>
 			<key interpolation="0" value="0" row="2397"/>
+			<key interpolation="1" value="0.25" row="2416"/>
+			<key interpolation="1" value="0" row="2419"/>
+			<key interpolation="1" value="0.25" row="2420"/>
+			<key interpolation="1" value="0" row="2421"/>
+			<key interpolation="1" value="0.25" row="2422"/>
+			<key interpolation="0" value="0" row="2423"/>
+			<key interpolation="1" value="0.4" row="2424"/>
+			<key interpolation="0" value="0" row="2427"/>
 			<key interpolation="1" value="0.1" row="2524"/>
 			<key interpolation="0" value="0" row="2527"/>
 		</track>
@@ -716,12 +763,14 @@
 			<key interpolation="0" value="0.1" row="2269"/>
 			<key interpolation="1" value="0.5" row="2272"/>
 			<key interpolation="0" value="0.1" row="2285"/>
-			<key interpolation="1" value="0.5" row="2344"/>
+			<key interpolation="1" value="1" row="2344"/>
+			<key interpolation="0" value="0" row="2355"/>
 			<key interpolation="0" value="0.1" row="2357"/>
 			<key interpolation="1" value="0.5" row="2384"/>
 			<key interpolation="0" value="0.1" row="2397"/>
-			<key interpolation="1" value="0.3" row="2524"/>
-			<key interpolation="0" value="0.1" row="2527"/>
+			<key interpolation="1" value="1" row="2416"/>
+			<key interpolation="0" value="0" row="2427"/>
+			<key interpolation="0" value="0.6" row="2524"/>
 		</track>
 		<track name="metabart:distort.phase">
 			<key interpolation="0" value="0" row="2080"/>
@@ -732,6 +781,8 @@
 			<key interpolation="0" value="0" row="2208"/>
 			<key interpolation="0" value="0" row="2220"/>
 			<key interpolation="0" value="0" row="2232"/>
+			<key interpolation="1" value="0" row="2524"/>
+			<key interpolation="0" value="10" row="2527"/>
 		</track>
 	</tracks>
 	<bookmarks/>

@@ -7,19 +7,17 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include <windows.h>
+#include "afxres.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -46,18 +44,16 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Norwegian (Bokmal) resources
+// Norwegian, Bokmål (Norway) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NOR)
-#ifdef _WIN32
 LANGUAGE LANG_NORWEGIAN, SUBLANG_NORWEGIAN_BOKMAL
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -67,7 +63,7 @@ LANGUAGE LANG_NORWEGIAN, SUBLANG_NORWEGIAN_BOKMAL
 IDD_CONFIG DIALOGEX 0, 0, 267, 184
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOPMOST
-CAPTION "Time to configure yo device"
+CAPTION "Morra til Dwarf er fra Bergkrystallen"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "Go gadget go",IDOK,156,161,50,14
@@ -81,7 +77,7 @@ BEGIN
     CONTROL         "Vertical sync",IDC_VSYNC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,120,106,54,8
     GROUPBOX        "Sound",IDC_SOUND,114,125,146,30
     COMBOBOX        IDC_SOUNDCARD,119,138,137,74,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         102,IDC_BITMAP,"Static",SS_BITMAP | WS_BORDER,6,6,101,166
+    CONTROL         IDB_BITMAP1,IDC_BITMAP,"Static",SS_BITMAP | WS_BORDER,6,6,101,166
     CONTROL         "Fullscreen",IDC_FULLSCREEN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,190,105,64,10
 END
 
@@ -92,7 +88,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_CONFIG, DIALOG
     BEGIN
@@ -120,7 +116,7 @@ IDB_BITMAP1             BITMAP                  "..\\dialog.bmp"
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_ICON1               ICON                    "..\\icon.ico"
-#endif    // Norwegian (Bokmal) resources
+#endif    // Norwegian, Bokmål (Norway) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

@@ -55,9 +55,8 @@ VS_OUTPUT vertex(VS_INPUT In)
 
 	float2 uv = float2(In.uv.x * 0.5, -In.uv.y * 0.5) + float2(0.5f, 0.5f);
 	float size = abs(coc(eyeDepth));
-	size += distance(screenPos.xy / screenPos.w, 0.0) * 0.0125 * 0.5;
+	size += distance(screenPos.xy / screenPos.w, 0.0) * 0.0125 * 0.1;
 	size = clamp(size * viewport.y, 2, 150);
-	size *= viewport.y / 512;
 	size *= screenPos.w;
 	float slice = log2(size) / log2(81);
 	slice = clamp(slice, 1.0 / 10, 1 - 1.0 / 10);

@@ -449,6 +449,10 @@ int main(int argc, char *argv[])
 		const sync_track *spheresDistTrack = sync_get_track(rocket, "spheres.dist");
 		const sync_track *spheresPalTrack = sync_get_track(rocket, "spheres.pal");
 
+		const sync_track *bartikkelDistortAmountTrack = sync_get_track(rocket, "metabart:distort.amount");
+		const sync_track *bartikkelDistortFreqTrack = sync_get_track(rocket, "metabart:distort.freq");
+		const sync_track *bartikkelDistortPhaseTrack = sync_get_track(rocket, "metabart:distort.phase");
+
 		Surface backbuffer   = device.getRenderTarget(0);
 
 		D3DCAPS9 caps;
@@ -548,6 +552,7 @@ int main(int argc, char *argv[])
 
 		Surface heightmap = loadSurface(device, "data/heightmap.png");
 		engine::ParticleCloud<float> cloud;
+		std::vector<engine::Particle<float>> originalCloud;
 
 		D3DLOCKED_RECT heightmapRect;
 		d3dErr(heightmap->LockRect(&heightmapRect, NULL, D3DLOCK_READONLY));
@@ -556,15 +561,20 @@ int main(int argc, char *argv[])
 				unsigned int color = ((unsigned int*)((char*)heightmapRect.pBits + heightmapRect.Pitch * y))[x];
 				float z = ((color & 0xFF) / 255.0f) * 15;
 				if (z > 0) {
-					float xo = math::notRandf(cloud.particles.size() * 3 + 0) * 0.5f - 0.25f;
-					float yo = math::notRandf(cloud.particles.size() * 3 + 1) * 0.5f - 0.25f;
-					float s  = math::notRandf(cloud.particles.size() * 3 + 2) * 0.75f + 0.5f;
-					Vector3 pos(x - heightmap.getWidth() * 0.5f + xo, -(y - heightmap.getHeight() * 0.5f + yo), +z);
+					float xo = math::notRandf(originalCloud.size() * 3 + 0) * 0.5f - 0.25f;
+					float yo = math::notRandf(originalCloud.size() * 3 + 1) * 0.5f - 0.25f;
+					float s = math::notRandf(originalCloud.size() * 3 + 2) * 0.75f + 0.5f;
+					Vector3 pos( x - heightmap.getWidth()  * 0.5f + xo,
+					            -y + heightmap.getHeight() * 0.5f - yo,
+					             z);
 
-					cloud.particles.push_back(engine::Particle<float>(Vector3(pos.x, pos.y, +pos.z) * 0.5f, s));
-					cloud.particles.push_back(engine::Particle<float>(Vector3(pos.x, pos.y, -pos.z) * 0.5f, s));
+					Vector3 p0 = Vector3(pos.x, pos.y, +pos.z) * 0.5f;
+					Vector3 p1 = Vector3(pos.x, pos.y, -pos.z) * 0.5f;
+					originalCloud.push_back(engine::Particle<float>(p0, s));
+					originalCloud.push_back(engine::Particle<float>(p1, s));
 				}
 			}
+		cloud.particles.resize(originalCloud.size());
 
 		bool dump_video = false;
 		for (int i = 1; i < argc; ++i)
@@ -792,31 +802,27 @@ int main(int argc, char *argv[])
 
 						int color_idx = int(math::notRandf(i * 3 + 2) * kulefarger_tex.getWidth());
 						float color = (0.5f + color_idx) / kulefarger_tex.getWidth();
-						spheres[i].color = Vector3(color,
-						                           pal,
-						                           0.0f);
+						spheres[i].color = Vector3(color, pal, 0.0f);
 					}
 				} else {
-					spheres.resize(3600);
+					spheres.resize(50000);
 					for (size_t i = 0; i < spheres.size(); ++i) {
 						float s = math::notRandf(i * 3 + 0) * float(M_PI * 2);
 						float t = math::notRandf(i * 3 + 1) * 2 - 1;
-						Vector3 pos = Vector3(sin(s), cos(s), i * 0.1f);
+						Vector3 pos = Vector3(sin(s), cos(s), i * 0.0075f);
 						Vector3 offset = normalize(Vector3(
 								sin((i % 1337) * 12.0 + anim * 0.0332),
 								cos((i % 1338) * 15.0 + anim * 0.041),
 								cos((i % 1339) * 13.0 - anim * 0.0323) * 0
 								));
 						pos += offset * dist;
-						float size = 0.2f + pow(math::notRandf(i), 5.0f) * 0.75f;
+						float size = 0.15f + pow(math::notRandf(i), 5.0f) * 0.75f;
 						spheres[i].pos = pos;
-						spheres[i].size = size * 5;
+						spheres[i].size = size * 2.5f;
 
 						int color_idx = int(math::notRandf(i * 3 + 2) * kulefarger_tex.getWidth());
 						float color = (0.5f + color_idx) / kulefarger_tex.getWidth();
-						spheres[i].color = Vector3(color,
-												   pal,
-												   0.0f);
+						spheres[i].color = Vector3(color, pal, 0.0f);
 					}
 				}
 
@@ -1012,6 +1018,20 @@ int main(int argc, char *argv[])
 					}
 
 					if (metabart) {
+						float distortAmount = (float)sync_get_val(bartikkelDistortAmountTrack, row);
+						float distortFreq = (float)sync_get_val(bartikkelDistortFreqTrack, row);
+						float distortPhase = (float)sync_get_val(bartikkelDistortPhaseTrack, row);
+						float distortPhaseX = distortPhase;
+						float distortPhaseY = distortPhase * 1.1f;
+						float distortPhaseZ = distortPhase * 1.3f;
+
+						assert(originalCloud.size() == cloud.particles.size());
+						for (int i = 0; i < originalCloud.size(); ++i) {
+							auto p = originalCloud[i];
+							p.pos *= 1.0f + (sin(p.pos.x * distortFreq + distortPhaseX) + sin(p.pos.y * distortFreq + distortPhaseY) + sin(p.pos.z * distortFreq + distortPhaseZ)) * distortAmount;
+							cloud.particles[i] = p;
+						}
+
 						cloud.sort(Vector3(modelview._13, modelview._23, modelview._33));
 						particleStreamer.begin();
 

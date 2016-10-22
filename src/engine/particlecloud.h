@@ -8,6 +8,7 @@ namespace engine
 	class Particle
 	{
 	public:
+		Particle() {}
 		Particle(const math::Vector3 &pos, const T &data) : pos(pos), data(data) {}
 
 		math::Vector3 pos;

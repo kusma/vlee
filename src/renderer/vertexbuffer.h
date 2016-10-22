@@ -3,6 +3,7 @@
 #include "../core/fatalexception.h"
 #include "../core/log.h"
 #include "../core/comref.h"
+#include "../core/err.h"
 #include "device.h"
 
 namespace renderer
@@ -16,7 +17,7 @@ namespace renderer
 		{
 			assert(NULL != p);
 			void *mem = 0;
-			p->Lock(offset, size, &mem, flags);
+			core::d3dErr(p->Lock(offset, size, &mem, flags));
 			assert(NULL != mem);
 			return mem;
 		}

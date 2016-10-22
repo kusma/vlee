@@ -9,7 +9,7 @@
 
 #include "drawable.h"
 
-#define PARTICLE_STREAMER_PARTICLE_COUNT 1024
+#define PARTICLE_STREAMER_PARTICLE_COUNT 16 * 1024
 #define PARTICLE_STREAMER_VERTEX_COUNT (PARTICLE_STREAMER_PARTICLE_COUNT * 4)
 namespace engine {
 	class ParticleStreamer : public Drawable {

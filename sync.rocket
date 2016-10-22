@@ -58,6 +58,7 @@
 			<key interpolation="0" value="3" row="1184"/>
 			<key interpolation="0" value="3" row="1568"/>
 			<key interpolation="0" value="3" row="2080"/>
+			<key interpolation="0" value="0" row="2208"/>
 		</track>
 		<track name="camera:dist">
 			<key interpolation="1" value="10" row="0"/>
@@ -67,6 +68,7 @@
 			<key interpolation="0" value="50" row="1120"/>
 			<key interpolation="0" value="15" row="1568"/>
 			<key interpolation="0" value="100" row="2080"/>
+			<key interpolation="0" value="100" row="2208"/>
 		</track>
 		<track name="camera:time">
 			<key interpolation="0" value="0" row="0"/>
@@ -74,6 +76,13 @@
 			<key interpolation="0" value="20" row="1183"/>
 			<key interpolation="0" value="-3" row="1568"/>
 			<key interpolation="0" value="0" row="2080"/>
+			<key interpolation="1" value="0" row="2208"/>
+			<key interpolation="0" value="10" row="2271"/>
+			<key interpolation="1" value="30" row="2272"/>
+			<key interpolation="1" value="25" row="2288"/>
+			<key interpolation="1" value="10" row="2300"/>
+			<key interpolation="1" value="4" row="2327"/>
+			<key interpolation="0" value="6" row="2335"/>
 		</track>
 		<track name="camera:pos.x">
 			<key interpolation="0" value="0" row="0"/>
@@ -106,7 +115,8 @@
 			<key interpolation="0" value="0" row="1824"/>
 			<key interpolation="1" value="29" row="2080"/>
 			<key interpolation="0" value="0" row="2135"/>
-			<key interpolation="0" value="-59" row="2136"/>
+			<key interpolation="0" value="-30" row="2136"/>
+			<key interpolation="0" value="-32" row="2208"/>
 		</track>
 		<track name="camera:pos.y">
 			<key interpolation="0" value="0" row="0"/>
@@ -120,7 +130,7 @@
 			<key interpolation="0" value="0" row="863"/>
 			<key interpolation="1" value="20" row="864"/>
 			<key interpolation="0" value="-20" row="927"/>
-			<key interpolation="0" value="0" row="928"/>
+			<key interpolation="0" value="1" row="928"/>
 			<key interpolation="0" value="0" row="1024"/>
 			<key interpolation="0" value="0" row="1032"/>
 			<key interpolation="0" value="0" row="1047"/>
@@ -137,11 +147,11 @@
 			<key interpolation="0" value="0" row="1824"/>
 			<key interpolation="1" value="-12" row="2080"/>
 			<key interpolation="0" value="0" row="2135"/>
-			<key interpolation="0" value="3" row="2136"/>
+			<key interpolation="0" value="8" row="2136"/>
+			<key interpolation="0" value="8" row="2208"/>
 		</track>
 		<track name="camera:pos.z">
 			<key interpolation="0" value="0" row="0"/>
-			<key interpolation="0" value="20" row="168"/>
 			<key interpolation="1" value="2" row="544"/>
 			<key interpolation="0" value="40" row="607"/>
 			<key interpolation="1" value="51.5" row="608"/>
@@ -176,7 +186,8 @@
 			<key interpolation="0" value="100" row="2079"/>
 			<key interpolation="1" value="27" row="2080"/>
 			<key interpolation="0" value="9" row="2135"/>
-			<key interpolation="0" value="72" row="2136"/>
+			<key interpolation="0" value="18" row="2136"/>
+			<key interpolation="0" value="18" row="2208"/>
 		</track>
 		<track name="camera:target.x">
 			<key interpolation="0" value="0" row="0"/>
@@ -196,7 +207,9 @@
 			<key interpolation="0" value="-78" row="1696"/>
 			<key interpolation="0" value="0" row="1824"/>
 			<key interpolation="0" value="0" row="2080"/>
-			<key interpolation="0" value="9" row="2136"/>
+			<key interpolation="0" value="-10" row="2136"/>
+			<key interpolation="0" value="0" row="2208"/>
+			<key interpolation="0" value="0" row="2264"/>
 		</track>
 		<track name="camera:target.y">
 			<key interpolation="0" value="0" row="0"/>
@@ -214,6 +227,8 @@
 			<key interpolation="0" value="0" row="1824"/>
 			<key interpolation="0" value="0" row="2080"/>
 			<key interpolation="0" value="0" row="2136"/>
+			<key interpolation="0" value="0" row="2208"/>
+			<key interpolation="0" value="0" row="2264"/>
 		</track>
 		<track name="camera:target.z">
 			<key interpolation="0" value="0" row="0"/>
@@ -236,6 +251,8 @@
 			<key interpolation="0" value="200" row="2079"/>
 			<key interpolation="0" value="0" row="2080"/>
 			<key interpolation="0" value="0" row="2136"/>
+			<key interpolation="0" value="0" row="2208"/>
+			<key interpolation="0" value="0" row="2264"/>
 		</track>
 		<track name="camera:roll">
 			<key interpolation="0" value="0" row="0"/>
@@ -253,6 +270,9 @@
 			<key interpolation="1" value="0" row="1568"/>
 			<key interpolation="0" value="90" row="2079"/>
 			<key interpolation="0" value="0" row="2080"/>
+			<key interpolation="1" value="-30" row="2208"/>
+			<key interpolation="0" value="30" row="2263"/>
+			<key interpolation="0" value="-20" row="2264"/>
 		</track>
 		<track name="camera:offset">
 			<key interpolation="0" value="0" row="0"/>
@@ -263,11 +283,16 @@
 			<key interpolation="0" value="10" row="1120"/>
 			<key interpolation="0" value="0" row="1184"/>
 			<key interpolation="0" value="0" row="2080"/>
+			<key interpolation="1" value="10" row="2208"/>
+			<key interpolation="0" value="0" row="2215"/>
+			<key interpolation="1" value="10" row="2264"/>
+			<key interpolation="0" value="0" row="2271"/>
 		</track>
 		<track name="camera:shake.speed">
 			<key interpolation="0" value="0.02" row="1120"/>
 			<key interpolation="0" value="0.1" row="1184"/>
 			<key interpolation="0" value="0" row="2080"/>
+			<key interpolation="0" value="1" row="2208"/>
 		</track>
 		<track name="camera:fov">
 			<key interpolation="0" value="80" row="0"/>
@@ -318,6 +343,7 @@
 			<key interpolation="2" value="120" row="2064"/>
 			<key interpolation="0" value="110" row="2072"/>
 			<key interpolation="0" value="60" row="2080"/>
+			<key interpolation="0" value="45" row="2208"/>
 		</track>
 		<track name="postproc:fade">
 			<key interpolation="0" value="0" row="0"/>
@@ -343,6 +369,9 @@
 			<key interpolation="1" value="1" row="2064"/>
 			<key interpolation="0" value="0" row="2075"/>
 			<key interpolation="0" value="1" row="2080"/>
+			<key interpolation="1" value="1" row="2256"/>
+			<key interpolation="0" value="0" row="2263"/>
+			<key interpolation="0" value="1" row="2264"/>
 			<key interpolation="1" value="1" row="2656"/>
 			<key interpolation="0" value="0" row="2688"/>
 		</track>
@@ -373,6 +402,8 @@
 			<key interpolation="0" value="0" row="1064"/>
 			<key interpolation="1" value="1" row="1120"/>
 			<key interpolation="0" value="0" row="1128"/>
+			<key interpolation="0" value="-1" row="1184"/>
+			<key interpolation="0" value="0" row="1188"/>
 			<key interpolation="1" value="0.5" row="1248"/>
 			<key interpolation="0" value="0" row="1256"/>
 			<key interpolation="1" value="0.5" row="1376"/>
@@ -399,8 +430,24 @@
 			<key interpolation="0" value="0" row="1895"/>
 			<key interpolation="1" value="0.5" row="1952"/>
 			<key interpolation="0" value="0" row="1959"/>
-			<key interpolation="1" value="0.5" row="2069"/>
+			<key interpolation="1" value="1" row="2069"/>
 			<key interpolation="0" value="0" row="2079"/>
+			<key interpolation="1" value="1" row="2080"/>
+			<key interpolation="0" value="0" row="2087"/>
+			<key interpolation="1" value="0.5" row="2092"/>
+			<key interpolation="0" value="0" row="2095"/>
+			<key interpolation="1" value="0.5" row="2096"/>
+			<key interpolation="0" value="0" row="2099"/>
+			<key interpolation="1" value="0.5" row="2104"/>
+			<key interpolation="0" value="0" row="2107"/>
+			<key interpolation="1" value="0.5" row="2112"/>
+			<key interpolation="0" value="0" row="2115"/>
+			<key interpolation="1" value="0.5" row="2128"/>
+			<key interpolation="0" value="0" row="2131"/>
+			<key interpolation="1" value="0.5" row="2208"/>
+			<key interpolation="0" value="0" row="2215"/>
+			<key interpolation="1" value="1" row="2264"/>
+			<key interpolation="0" value="0" row="2271"/>
 			<key interpolation="1" value="1" row="2592"/>
 			<key interpolation="0" value="0" row="2648"/>
 		</track>
@@ -413,6 +460,7 @@
 			<key interpolation="0" value="5" row="368"/>
 			<key interpolation="0" value="9" row="480"/>
 			<key interpolation="0" value="3" row="512"/>
+			<key interpolation="0" value="20" row="1032"/>
 			<key interpolation="0" value="12" row="1568"/>
 			<key interpolation="0" value="13" row="1632"/>
 			<key interpolation="0" value="14" row="1696"/>
@@ -454,6 +502,9 @@
 			<key interpolation="0" value="1" row="520"/>
 			<key interpolation="1" value="1" row="528"/>
 			<key interpolation="0" value="0" row="543"/>
+			<key interpolation="1" value="1" row="1047"/>
+			<key interpolation="0" value="0" row="1055"/>
+			<key interpolation="0" value="0" row="1056"/>
 			<key interpolation="0" value="1" row="1568"/>
 			<key interpolation="1" value="1" row="1816"/>
 			<key interpolation="1" value="0" row="1824"/>
@@ -546,11 +597,19 @@
 			<key interpolation="1" value="0.1" row="2104"/>
 			<key interpolation="0" value="0" row="2109"/>
 			<key interpolation="1" value="0.4" row="2136"/>
-			<key interpolation="0" value="0.2" row="2137"/>
+			<key interpolation="0" value="0" row="2143"/>
 			<key interpolation="1" value="0.4" row="2144"/>
 			<key interpolation="0" value="0.2" row="2148"/>
 			<key interpolation="1" value="0.4" row="2152"/>
 			<key interpolation="0" value="0.2" row="2156"/>
+			<key interpolation="1" value="0.1" row="2208"/>
+			<key interpolation="0" value="0" row="2213"/>
+			<key interpolation="1" value="0.1" row="2220"/>
+			<key interpolation="0" value="0" row="2225"/>
+			<key interpolation="1" value="0.1" row="2232"/>
+			<key interpolation="0" value="0" row="2237"/>
+			<key interpolation="1" value="0.1" row="2256"/>
+			<key interpolation="0" value="0" row="2272"/>
 		</track>
 		<track name="metabart:distort.freq">
 			<key interpolation="1" value="0.5" row="2080"/>
@@ -559,7 +618,16 @@
 			<key interpolation="0" value="0.1" row="2097"/>
 			<key interpolation="1" value="0.5" row="2104"/>
 			<key interpolation="0" value="0.1" row="2109"/>
-			<key interpolation="0" value="0.05" row="2136"/>
+			<key interpolation="1" value="0.25" row="2136"/>
+			<key interpolation="0" value="1" row="2143"/>
+			<key interpolation="1" value="0.3" row="2148"/>
+			<key interpolation="0" value="0" row="2151"/>
+			<key interpolation="1" value="0.5" row="2208"/>
+			<key interpolation="0" value="0.1" row="2213"/>
+			<key interpolation="1" value="0.5" row="2220"/>
+			<key interpolation="0" value="0.1" row="2225"/>
+			<key interpolation="1" value="0.5" row="2232"/>
+			<key interpolation="0" value="0.1" row="2237"/>
 		</track>
 		<track name="metabart:distort.phase">
 			<key interpolation="0" value="0" row="2080"/>
@@ -567,6 +635,9 @@
 			<key interpolation="0" value="0" row="2104"/>
 			<key interpolation="1" value="0.1" row="2136"/>
 			<key interpolation="0" value="10" row="2199"/>
+			<key interpolation="0" value="0" row="2208"/>
+			<key interpolation="0" value="0" row="2220"/>
+			<key interpolation="0" value="0" row="2232"/>
 		</track>
 	</tracks>
 	<bookmarks/>

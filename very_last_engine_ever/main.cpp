@@ -299,6 +299,8 @@ void drawParticleField(renderer::Device &device, engine::ParticleStreamer &strea
 	}
 }
 
+extern "C" _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+
 int main(int /*argc*/, char* /*argv*/ [])
 {
 #ifdef _DEBUG
@@ -382,10 +384,7 @@ int main(int /*argc*/, char* /*argv*/ [])
 		Track &cameraShakeAmtTrack     = syncDevice->getTrack("cam.shake.amt");
 		Track &cameraShakeTempoTrack     = syncDevice->getTrack("cam.shake.tempo");
 		
-		Track &colorMapBlendTrack  = syncDevice->getTrack("cm.blend");
-		Track &colorMapPalTrack    = syncDevice->getTrack("cm.pal");
 		Track &colorMapFadeTrack   = syncDevice->getTrack("cm.fade");
-		Track &colorMapFlashTrack  = syncDevice->getTrack("cm.flash");
 		Track &colorMapDistortXTrack  = syncDevice->getTrack("cm.dist.x");
 		Track &colorMapDistortYTrack  = syncDevice->getTrack("cm.dist.y");
 		Track &overlayTrack  = syncDevice->getTrack("cm.overlay");
@@ -425,6 +424,8 @@ int main(int /*argc*/, char* /*argv*/ [])
 		Track &bigbangTime = syncDevice->getTrack("bb.time");
 		Track &partTrack = syncDevice->getTrack("_part");
 		
+		Track &blinkyTrack = syncDevice->getTrack("BLINKY");
+
 		engine::SpectrumData noise_fft = engine::loadSpectrumData("data/noise.fft");
 		
 		Surface backbuffer   = device.getRenderTarget(0);
@@ -1482,26 +1483,22 @@ int main(int /*argc*/, char* /*argv*/ [])
 			
 			color_msaa.resolve(device);
 			
-			color_map_fx->setFloat("fade", colorMapBlendTrack.getValue(beat));
+			color_map_fx->setFloat("fade", colorMapFadeTrack.getValue(beat));
+			color_map_fx->setFloat("blinky", blinkyTrack.getValue(beat));
 
-			float flash = pow(colorMapFlashTrack.getValue(beat) == 1000.f ? (float)(rand()%2) : colorMapFlashTrack.getValue(beat), 2.0f);
 			if (korridorEnabled)
 			{
 				Vector3 dir = spherelight_transform.inverse().getTranslation();
 				float l = pow(getCubeLightBrightness(dir), 5.0f);
 				l *= 1.0f / (math::length(dir) * 0.25f + 1);
-				flash += l;
 			}
 			
 			color_map_fx->setFloat("time", beat);
-			color_map_fx->setFloat("flash", flash);
-			color_map_fx->setFloat("fade2", colorMapFadeTrack.getValue(beat));
-			color_map_fx->setFloat("alpha", 0.25f);
 			color_map_fx->setTexture("tex", color1_hdr);
 			color_map_fx->setTexture("tex2", color_msaa);
-//			color_map_fx->setTexture("color_map", color_maps[colorMapPalTrack.getIntValue(beat) % 2]);
 			color_map_fx->setTexture("color_map", color_maps[0]);
 			color_map_fx->setTexture("desaturate", desaturate_tex);
+			color_map_fx->setTexture("noise", noise_tex);
 			
 			device->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE);
 			drawFuzz(color_map_fx, vertex_streamer,  time, 1.0f, colorMapDistortXTrack.getValue(beat), colorMapDistortYTrack.getValue(beat),

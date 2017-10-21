@@ -175,7 +175,7 @@ float3 sample_lensflare(float2 pos)
 	for (int i = 0; i < ghosts; ++i) {
 		float2 ghost_start = ipos + delta * 0.8 * i;
 		float2 ghost_stop = ipos + delta * 1.2 * i;
-		int ghost_samples = max(3, int(length(viewport * (ghost_stop - ghost_start) / 16)));
+		int ghost_samples = 16;
 		flare += sample_spectrum(bloom_samp, ghost_start, ghost_stop, ghost_samples, 1);
 	}
 
@@ -189,7 +189,7 @@ float3 sample_lensflare(float2 pos)
 	float flare_fade = pow(1 - abs(2 * distance(pos, 0.5) - 1), 5);
 	float2 halo_start = ipos + normalize(delta) * 0.5 * 0.95;
 	float2 halo_stop = ipos + normalize(delta) * 0.5 * 1.05;
-	int halo_samples = max(3, int(length(viewport * (halo_stop - halo_start) / 2)));
+	int halo_samples = 16;
 
 	flare += sample_spectrum(bloom_samp, halo_start, halo_stop, halo_samples, 2) * flare_fade;
 
@@ -229,7 +229,7 @@ float4 pixel(VS_OUTPUT In, float2 vpos : VPOS) : COLOR
 		end += dist * 0.12;
 	}
 
-	int samples = max(3, int(length(viewport * (end - pos) / 2)));
+	int samples = 16;
 	float3 col = sample_spectrum(color_samp, pos, end, samples, 0);
 
 	col += (sample_bloom(pos) + sample_lensflare(pos)) * tex2Dlod(lensdirt_samp, float4(pos, 0, 0));
